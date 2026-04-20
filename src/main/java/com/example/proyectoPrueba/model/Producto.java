@@ -2,6 +2,16 @@ package com.example.proyectoPrueba.model;
 
 public class Producto {
     private String name;
+    private int id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     private float price;
     private float weight;
 
