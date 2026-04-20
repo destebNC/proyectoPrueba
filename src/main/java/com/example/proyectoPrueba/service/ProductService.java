@@ -1,9 +1,9 @@
 package com.example.proyectoPrueba.service;
 
-import com.example.proyectoPrueba.dto.InventarioDTO;
-import com.example.proyectoPrueba.dto.ProductoDto;
-import com.example.proyectoPrueba.model.Inventario;
-import com.example.proyectoPrueba.model.Producto;
+import com.example.proyectoPrueba.dto.InventoryDTO;
+import com.example.proyectoPrueba.dto.ProductDto;
+import com.example.proyectoPrueba.model.Inventory;
+import com.example.proyectoPrueba.model.Product;
 import com.example.proyectoPrueba.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,37 +19,37 @@ public class ProductService {
         this.repository=repository;
     }
 
-    public ProductoDto productToProductDTO(Producto product){
+    public ProductDto productToProductDTO(Product product){
 
-        return new ProductoDto(
+        return new ProductDto(
                 product.getName(),
                 product.getPrice()
         );
     }
 
-    public InventarioDTO inventarioToDTO (Inventario inventario){
-        return mapper.toDto(inventario);
+    public InventoryDTO inventarioToDTO (Inventory inventory){
+        return mapper.toDto(inventory);
     }
 
-    public Producto save(Producto producto){
-        return repository.save(producto);
+    public Product save(Product product){
+        return repository.save(product);
     }
 
-    public List<ProductoDto> getAll() {
+    public List<ProductDto> getAll() {
         return repository.findAll()
                 .stream()
                 .map(mapper::toDto)
                 .toList();
     }
 
-    public ProductoDto getById(Integer id){
-        Producto product = repository.findById(id)
+    public ProductDto getById(Integer id){
+        Product product = repository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Producto no encontrado"));
         return mapper.toDto(product);
     }
 
     public void delete(Integer id){
-        Producto product = repository.findById(id)
+        Product product = repository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Producto no encontrado"));
         repository.deleteById(id);
     }

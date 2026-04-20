@@ -1,31 +1,29 @@
 package com.example.proyectoPrueba.controller;
 
-import com.example.proyectoPrueba.dto.InventarioDTO;
-import com.example.proyectoPrueba.dto.ProductoDto;
-import com.example.proyectoPrueba.model.Inventario;
-import com.example.proyectoPrueba.model.Producto;
+import com.example.proyectoPrueba.dto.ProductDto;
+import com.example.proyectoPrueba.model.Product;
 import com.example.proyectoPrueba.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-public class InventarioController {
+public class InventoryController {
 
     private final ProductService productService;
 
-    public InventarioController (ProductService productService){
+    public InventoryController(ProductService productService){
         this.productService=productService;
     }
 
     @GetMapping("/productos")
-    public List<ProductoDto> getAll(){
+    public List<ProductDto> getAll(){
         return productService.getAll();
     }
 
     //GET BY ID
     @GetMapping("/productos/{product_id}")
-    public ProductoDto getById(
+    public ProductDto getById(
             @PathVariable("product_id") Integer id
     ){
         return productService.getById(id);
@@ -33,9 +31,9 @@ public class InventarioController {
 
     @PostMapping("/agregar")
     public String post(
-            @RequestBody Producto producto
+            @RequestBody Product product
             ){
-            productService.save(producto);
+            productService.save(product);
             return "Producto guardado con éxito";
     }
 

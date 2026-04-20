@@ -5,13 +5,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 @Entity
-public class Producto {
+public class Product {
     private String name;
     @Id
     @GeneratedValue
     private int id;
 
-    public Producto() {
+    public Product() {
     }
 
     public int getId() {
@@ -25,7 +25,7 @@ public class Producto {
     private float price;
     private float weight;
 
-    public Producto(String name, float price, float weight){
+    public Product(String name, float price, float weight){
         this.name=name;
         this.price=price;
         this.weight=weight;
