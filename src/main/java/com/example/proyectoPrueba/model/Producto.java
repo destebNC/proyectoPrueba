@@ -1,8 +1,18 @@
 package com.example.proyectoPrueba.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Producto {
     private String name;
+    @Id
+    @GeneratedValue
     private int id;
+
+    public Producto() {
+    }
 
     public int getId() {
         return id;
