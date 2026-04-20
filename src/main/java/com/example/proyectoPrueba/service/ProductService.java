@@ -5,7 +5,6 @@ import com.example.proyectoPrueba.dto.ProductoDto;
 import com.example.proyectoPrueba.model.Inventario;
 import com.example.proyectoPrueba.model.Producto;
 import com.example.proyectoPrueba.repository.ProductRepository;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,10 +42,15 @@ public class ProductService {
                 .toList();
     }
 
-    public ProductoDto getById(){
-        return repository.findById()
-                .stream()
-                .map(mapper::toDto)
-                .toString();
+    public ProductoDto getById(Integer id){
+        Producto product = repository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Producto no encontrado"));
+        return mapper.toDto(product);
+    }
+
+    public void delete(Integer id){
+        Producto product = repository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Producto no encontrado"));
+        repository.deleteById(id);
     }
 }
