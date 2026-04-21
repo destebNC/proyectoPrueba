@@ -21,4 +21,29 @@ public class Inventory {
     }
 
     public List<Product> productList;
+
+    public Inventory() {
+    }
+
+    public Inventory(String name, int id, List<Product> productList) {
+        this.name = name;
+        this.id = id;
+        this.productList = productList;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }
