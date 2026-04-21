@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //ESTA LINEA ES UN COMMIT DE PRUEBA
 //LINEA DE PRUEBA JC
 //UNA PRUEBA MAS
+//JUAN CARLo gracias
 @SpringBootApplication
 public class ProyectoPruebaApplication {
 
