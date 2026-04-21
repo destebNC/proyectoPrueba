@@ -1,17 +1,15 @@
 package com.example.proyectoPrueba.service;
 
-import com.example.proyectoPrueba.dto.InventoryDTO;
+import com.example.proyectoPrueba.dto.InventoryDto;
 import com.example.proyectoPrueba.dto.ProductDto;
 import com.example.proyectoPrueba.model.Inventory;
 import com.example.proyectoPrueba.model.Product;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class Mapper {
 
-    public ProductDto toDto(Product product) {
+    public ProductDto productToDto(Product product) {
         return new ProductDto(
                 product.getName(),
                 product.getPrice(),
@@ -19,13 +17,10 @@ public class Mapper {
         );
     }
 
-    public InventoryDTO toDto(Inventory inventory) {
+    public InventoryDto inventoryToDto(Inventory inventory) {
 
-        List<ProductDto> productosDto = inventory.getProductList()
-                .stream()
-                .map(this::toDto)
-                .toList();
-
-        return new InventoryDTO(productosDto);
+        return new InventoryDto(
+                inventory.getName(),
+        )
     }
 }

@@ -1,8 +1,6 @@
 package com.example.proyectoPrueba.service;
 
-import com.example.proyectoPrueba.dto.InventoryDTO;
 import com.example.proyectoPrueba.dto.ProductDto;
-import com.example.proyectoPrueba.model.Inventory;
 import com.example.proyectoPrueba.model.Product;
 import com.example.proyectoPrueba.repository.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -28,10 +26,6 @@ public class ProductService {
         );
     }
 
-    public InventoryDTO inventarioToDTO (Inventory inventory){
-        return mapper.toDto(inventory);
-    }
-
     public Product save(Product product){
         return repository.save(product);
     }
@@ -39,14 +33,14 @@ public class ProductService {
     public List<ProductDto> getAll() {
         return repository.findAll()
                 .stream()
-                .map(mapper::toDto)
+                .map(mapper::productToDto)
                 .toList();
     }
 
     public ProductDto getById(Integer id){
         Product product = repository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Producto no encontrado"));
-        return mapper.toDto(product);
+        return mapper.productToDto(product);
     }
 
     public void delete(Integer id){
@@ -66,6 +60,8 @@ public class ProductService {
 
         Product updated = repository.save(product);
 
-        return mapper.toDto(updated);
+        return mapper.productToDto(updated);
+
+
     }
 }
