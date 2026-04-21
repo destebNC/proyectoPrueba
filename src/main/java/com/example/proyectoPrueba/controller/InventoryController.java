@@ -2,14 +2,41 @@ package com.example.proyectoPrueba.controller;
 
 import com.example.proyectoPrueba.dto.InventoryDTO;
 import com.example.proyectoPrueba.model.Inventory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.proyectoPrueba.model.Product;
+import com.example.proyectoPrueba.service.InventoryService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/inventories")
 public class InventoryController {
 
-    @GetMapping("/inventory")
-    public InventoryDTO getAll(){
-        return ;
+    private final InventoryService inventoryService; // Debes crear este servicio
+
+    public InventoryController(InventoryService inventoryService) {
+        this.inventoryService = inventoryService;
+    }
+
+    // Crear un nuevo tipo de inventario (Ej: "Carnicería")
+    @PostMapping
+    public String create(@RequestBody Inventory inventory) {
+        inventoryService.save(inventory);
+        return "Inventario creado";
+    }
+
+    // Listar todos los inventarios
+    @GetMapping
+    public List<Inventory> getAll() {
+        return inventoryService.getAll();
+    }
+
+    // Añadir un producto a un inventario específico
+    @PostMapping("/{inventoryId}/products")
+    public String addProductToInventory(
+            @PathVariable Integer inventoryId,
+            @RequestBody Product product) {
+        inventoryService.addProduct(inventoryId, product);
+        return "Producto añadido al inventario con éxito";
     }
 }
