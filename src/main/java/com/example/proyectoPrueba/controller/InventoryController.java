@@ -45,4 +45,13 @@ public class InventoryController {
         return "El producto con id: "+id+" ha sido eliminado con éxito";
     }
 
+    @PutMapping("/update/{product_id}")
+    public String put(
+            @PathVariable Integer id,
+            @RequestBody ProductDto productDto
+    ){
+        productService.update(id, productDto);
+        return "El producto con id: "+id+" ha sido modificado";
+    }
+
 }
