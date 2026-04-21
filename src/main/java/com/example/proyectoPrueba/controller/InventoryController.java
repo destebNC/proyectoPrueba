@@ -47,11 +47,11 @@ public class InventoryController {
 
     @PutMapping("/update/{product_id}")
     public String put(
-            @PathVariable Integer id,
+            @PathVariable("product_id") Integer id,
             @RequestBody ProductDto productDto
     ){
         productService.update(id, productDto);
-        return "El producto con id: "+id+" ha sido modificadosuiddghsfhsfhudsifsu";
+        return "El producto con id: "+id+" ha sido modificado";
     }
 
 }
