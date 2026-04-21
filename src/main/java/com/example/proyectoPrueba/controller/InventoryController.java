@@ -51,7 +51,7 @@ public class InventoryController {
             @RequestBody ProductDto productDto
     ){
         productService.update(id, productDto);
-        return "El producto con id: "+id+" ha sido modificado en cosas";
+        return "El producto con id: "+id+" ha sido modificado";
     }
 
 }
