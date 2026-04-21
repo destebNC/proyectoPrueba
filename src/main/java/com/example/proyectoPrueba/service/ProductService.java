@@ -23,7 +23,8 @@ public class ProductService {
 
         return new ProductDto(
                 product.getName(),
-                product.getPrice()
+                product.getPrice(),
+                product.getWeight()
         );
     }
 
@@ -52,5 +53,19 @@ public class ProductService {
         Product product = repository.findById(id)
                 .orElseThrow(()-> new RuntimeException("Producto no encontrado"));
         repository.deleteById(id);
+    }
+
+    public ProductDto update(Integer id, ProductDto dto) {
+
+        Product product = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        product.setName(dto.name());
+        product.setPrice(dto.price());
+        product.setWeight(dto.weight());
+
+        Product updated = repository.save(product);
+
+        return mapper.toDto(updated);
     }
 }
