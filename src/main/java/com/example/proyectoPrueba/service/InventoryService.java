@@ -1,28 +1,31 @@
 package com.example.proyectoPrueba.service;
 
-import com.example.proyectoPrueba.dto.InventoryDto;
+import com.example.proyectoPrueba.dto.InventoryDTO;
 import com.example.proyectoPrueba.model.Inventory;
 import com.example.proyectoPrueba.repository.InventoryRepository;
 import com.example.proyectoPrueba.repository.ProductRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class InventoryService {
-    private final Mapper mapper;
-    private final InventoryRepository repository;
+    private Mapper mapper;
+    private InventoryRepository repository;
 
-    pubic InventoryService(Mapper mapper, ProductRepository repository){
+    public InventoryService(Mapper mapper, InventoryRepository repository){
         this.mapper=mapper;
         this.repository=repository;
     }
 
-    public InventoryDto inventoryToInventoryDto(Inventory inventory){
-        return mapper.inventoryToDto(inventory)
+    public InventoryDTO inventoryToInventoryDto(Inventory inventory){
+        return mapper.inventoryToDto(inventory);
     }
 
-    public List<InventoryDto> getAll(){
+    public List<InventoryDTO> getAll(){
         return repository.findAll()
                 .stream()
-                .map(mapper)
+                .map(mapper::inventoryToDto)
+                .toList();
     }
 }
