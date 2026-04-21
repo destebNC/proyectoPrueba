@@ -1,6 +1,7 @@
 package com.example.proyectoPrueba.controller;
 
 import com.example.proyectoPrueba.dto.InventoryDTO;
+import com.example.proyectoPrueba.dto.InventoryDto;
 import com.example.proyectoPrueba.model.Inventory;
 import com.example.proyectoPrueba.model.Product;
 import com.example.proyectoPrueba.service.InventoryService;
@@ -19,20 +20,20 @@ public class InventoryController {
     }
 
     // Crear un nuevo tipo de inventario (Ej: "Carnicería")
-    @PostMapping
+    @PostMapping("/inventory")
     public String create(@RequestBody Inventory inventory) {
         inventoryService.save(inventory);
         return "Inventario creado";
     }
 
     // Listar todos los inventarios
-    @GetMapping
-    public List<Inventory> getAll() {
+    @GetMapping("/inventories")
+    public List<InventoryDto> getAll() {
         return inventoryService.getAll();
     }
 
     // Añadir un producto a un inventario específico
-    @PostMapping("/{inventoryId}/products")
+    @PostMapping("/inventory/{inventoryId}/products")
     public String addProductToInventory(
             @PathVariable Integer inventoryId,
             @RequestBody Product product) {

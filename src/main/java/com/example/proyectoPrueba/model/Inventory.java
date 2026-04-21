@@ -20,6 +20,7 @@ public class Inventory {
         this.productList = productList;
     }
 
+    @OneToMany(cascade = CascadeType.ALL)
     public List<Product> productList;
 
     public Inventory() {

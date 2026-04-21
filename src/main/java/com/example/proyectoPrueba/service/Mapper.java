@@ -1,7 +1,8 @@
 package com.example.proyectoPrueba.service;
 
-import com.example.proyectoPrueba.dto.InventoryDTO;
-import com.example.proyectoPrueba.dto.InventoryDTO;
+import com.example.proyectoPrueba.dto.InventoryDto;
+import com.example.proyectoPrueba.dto.InventoryDto;
+import com.example.proyectoPrueba.dto.InventoryDto;
 import com.example.proyectoPrueba.dto.ProductDto;
 import com.example.proyectoPrueba.model.Inventory;
 import com.example.proyectoPrueba.model.Product;
@@ -18,9 +19,9 @@ public class Mapper {
         );
     }
 
-    public InventoryDTO inventoryToDto(Inventory inventory) {
+    public InventoryDto inventoryToDto(Inventory inventory) {
 
-        return new InventoryDTO(
+        return new InventoryDto(
                 inventory.getName(),
                 inventory.getProductList()
         );
