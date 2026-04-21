@@ -1,7 +1,8 @@
 package com.example.proyectoPrueba.model;
 
-import java.util.List;
+import jakarta.persistence.Entity;
 
+import java.util.List;
 
 public class Inventory {
     public List<Product> getProductList() {

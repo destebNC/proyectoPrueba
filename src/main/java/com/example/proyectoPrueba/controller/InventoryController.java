@@ -16,20 +16,20 @@ public class InventoryController {
         this.productService=productService;
     }
 
-    @GetMapping("/productos")
+    @GetMapping("/products")
     public List<ProductDto> getAll(){
         return productService.getAll();
     }
 
     //GET BY ID
-    @GetMapping("/productos/{product_id}")
+    @GetMapping("/products/{product_id}")
     public ProductDto getById(
             @PathVariable("product_id") Integer id
     ){
         return productService.getById(id);
     }
 
-    @PostMapping("/agregar")
+    @PostMapping("/add")
     public String post(
             @RequestBody Product product
             ){
