@@ -4,64 +4,49 @@ import com.example.proyectoPrueba.dto.ProductDto;
 import com.example.proyectoPrueba.model.Product;
 import com.example.proyectoPrueba.repository.ProductRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
-    private final Mapper mapper;
-    private final ProductRepository repository;
 
-    public ProductService(Mapper mapper, ProductRepository repository) {
-        this.mapper = mapper;
-        this.repository=repository;
-    }
+    private final ProductRepository productRepository;
 
-    public ProductDto productToProductDTO(Product product){
-
-        return new ProductDto(
-                product.getName(),
-                product.getPrice(),
-                product.getWeight()
-        );
-    }
-
-    public Product save(Product product){
-        return repository.save(product);
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     public List<ProductDto> getAll() {
-        return repository.findAll()
-                .stream()
-                .map(mapper::productToDto)
-                .toList();
+        return productRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    public ProductDto getById(Integer id){
-        Product product = repository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Producto no encontrado"));
-        return mapper.productToDto(product);
+    public ProductDto getById(Integer id) {
+        Product product = productRepository.findById(id).orElseThrow();
+        return convertToDto(product);
     }
 
-    public void delete(Integer id){
-        Product product = repository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Producto no encontrado"));
-        repository.deleteById(id);
+    public void save(Product product) {
+        productRepository.save(product);
     }
 
-    public ProductDto update(Integer id, ProductDto dto) {
+    public void delete(Integer id) {
+        productRepository.deleteById(id);
+    }
 
-        Product product = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+    public void update(Integer id, ProductDto productDto) {
+        Product product = productRepository.findById(id).orElseThrow();
+        product.setName(productDto.getName());
+        product.setPrice(productDto.getPrice());
+        product.setWeight(productDto.getWeight());
+        productRepository.save(product);
+    }
 
-        product.setName(dto.name());
-        product.setPrice(dto.price());
-        product.setWeight(dto.weight());
-
-        Product updated = repository.save(product);
-
-        return mapper.productToDto(updated);
-
-
+    private ProductDto convertToDto(Product product) {
+        ProductDto dto = new ProductDto();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());
+        dto.setWeight(product.getWeight());
+        return dto;
     }
 }

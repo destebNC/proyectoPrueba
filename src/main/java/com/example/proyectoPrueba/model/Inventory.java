@@ -1,42 +1,34 @@
 package com.example.proyectoPrueba.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import java.util.List;
 
 @Entity
 @Table(name="inventarios")
 public class Inventory {
-    public String name;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int id;
-    public List<Product> getProductList() {
-        return productList;
-    }
+    private Integer id;
 
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
-    }
+    private String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    public List<Product> productList;
+    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL)
+    private List<Product> productList;
 
     public Inventory() {
     }
 
-    public Inventory(String name, int id, List<Product> productList) {
+    public Inventory(String name, Integer id, List<Product> productList) {
         this.name = name;
         this.id = id;
         this.productList = productList;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    public Integer getId() { return id; }
+    public void setId(Integer id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public List<Product> getProductList() { return productList; }
+    public void setProductList(List<Product> productList) { this.productList = productList; }
 }
