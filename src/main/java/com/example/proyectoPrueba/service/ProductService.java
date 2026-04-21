@@ -1,25 +1,56 @@
 package com.example.proyectoPrueba.service;
 
-import com.example.proyectoPrueba.dto.InventarioDTO;
-import com.example.proyectoPrueba.dto.ProductoDto;
-import com.example.proyectoPrueba.model.Inventario;
-import com.example.proyectoPrueba.model.Producto;
+import com.example.proyectoPrueba.dto.InventoryDTO;
+import com.example.proyectoPrueba.dto.ProductDto;
+import com.example.proyectoPrueba.model.Inventory;
+import com.example.proyectoPrueba.model.Product;
+import com.example.proyectoPrueba.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ProductService {
+    private final Mapper mapper;
+    private final ProductRepository repository;
 
-    public ProductoDto productToProductDTO(Producto product){
+    public ProductService(Mapper mapper, ProductRepository repository) {
+        this.mapper = mapper;
+        this.repository=repository;
+    }
 
-        return new ProductoDto(
+    public ProductDto productToProductDTO(Product product){
+
+        return new ProductDto(
                 product.getName(),
                 product.getPrice()
         );
     }
 
-    public InventarioDTO inventarioToInventarioDTO(Inventario inventario){
-
-        //  FALTA ESTO
+    public InventoryDTO inventarioToDTO (Inventory inventory){
+        return mapper.toDto(inventory);
     }
 
+    public Product save(Product product){
+        return repository.save(product);
+    }
+
+    public List<ProductDto> getAll() {
+        return repository.findAll()
+                .stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
+    public ProductDto getById(Integer id){
+        Product product = repository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Producto no encontrado"));
+        return mapper.toDto(product);
+    }
+
+    public void delete(Integer id){
+        Product product = repository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Producto no encontrado"));
+        repository.deleteById(id);
+    }
 }

@@ -1,8 +1,18 @@
 package com.example.proyectoPrueba.model;
 
-public class Producto {
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
+public class Product {
     private String name;
+    @Id
+    @GeneratedValue
     private int id;
+
+    public Product() {
+    }
 
     public int getId() {
         return id;
@@ -15,7 +25,7 @@ public class Producto {
     private float price;
     private float weight;
 
-    public Producto(String name, float price, float weight){
+    public Product(String name, float price, float weight){
         this.name=name;
         this.price=price;
         this.weight=weight;
