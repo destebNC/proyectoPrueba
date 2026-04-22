@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/inventories")
+@RequestMapping
 public class InventoryController {
 
     private final InventoryService inventoryService;
@@ -17,22 +17,32 @@ public class InventoryController {
         this.inventoryService = inventoryService;
     }
 
-    @PostMapping
+    @PostMapping("/addInv")
     public String create(@RequestBody Inventory inventory) {
         inventoryService.save(inventory);
         return "Inventario creado";
     }
 
-    @GetMapping
+    @GetMapping("/inventories")
     public List<InventoryDto> getAll() {
         return inventoryService.getAll();
     }
 
-    @PostMapping("/{inventoryId}/products")
-    public String addProductToInventory(
-            @PathVariable Integer inventoryId,
-            @RequestBody Product product) {
-        inventoryService.addProduct(inventoryId, product);
-        return "Producto añadido al inventario con éxito";
+    @DeleteMapping("/deleteInv/{inventory_id}")
+    public String deleteInv(
+            @PathVariable("inventory_id") Integer inventoryId
+    ){
+        inventoryService.delete(inventoryId);
+        return "Inventario eliminado con éxito";
     }
+
+    @PutMapping("/updateInv/{inventory_id}")
+    public String update(
+            @PathVariable("inventory_id")Integer inventoryId,
+            @RequestBody Inventory inventory
+    ){
+        inventoryService.updateInv(inventoryId, inventory);
+        return "Los datos del inventario de ID "+inventoryId+" han sido actualizados con éxito";
+    }
+
 }

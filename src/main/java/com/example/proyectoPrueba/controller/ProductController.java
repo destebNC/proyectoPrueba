@@ -16,7 +16,7 @@ public class ProductController {
         this.productService=productService;
     }
 
-    @GetMapping
+    @GetMapping("/products")
     public List<ProductDto> getAll(){
         return productService.getAll();
     }
@@ -26,21 +26,28 @@ public class ProductController {
         return productService.getById(id);
     }
 
-    @PostMapping("/add")
-    public String post(@RequestBody Product product){
-        productService.save(product);
-        return "Producto guardado con éxito";
+    @PostMapping("/{inventoryId}/products")
+    public String addProductToInventory(
+            @PathVariable("inventory_id") Integer inventoryId,
+            @RequestBody Product product) {
+        productService.addProduct(inventoryId, product);
+        return "Producto añadido al inventario con éxito";
     }
 
-    @DeleteMapping("/delete/{product_id}")
-    public String delete(@PathVariable("product_id") Integer id){
-        productService.delete(id);
-        return "El producto con id: "+id+" ha sido eliminado con éxito";
+    @DeleteMapping("/delete/{inventoryId}/{product_id}")
+    public String delete(
+            @PathVariable("product_id") Integer productId,
+            @PathVariable("inventory_id") Integer inventoryId){
+        productService.delete(inventoryId, productId);
+        return "El producto con id: "+productId+" ha sido eliminado con éxito del inventario de ID " +inventoryId;
     }
 
-    @PutMapping("/update/{product_id}")
-    public String put(@PathVariable("product_id") Integer id, @RequestBody ProductDto productDto){
-        productService.update(id, productDto);
-        return "El producto con id: "+id+" ha sido modificado";
+    @PutMapping("updateProduct/{inventory_id}/{product_id}")
+    public String update(
+            @PathVariable("inventory_id") Integer inventoryId,
+            @PathVariable("product_id") Integer productId,
+            @RequestBody Product product){
+        productService.updateProduct(inventoryId,productId, product);
+        return "Producto actualizado con éxito";
     }
 }

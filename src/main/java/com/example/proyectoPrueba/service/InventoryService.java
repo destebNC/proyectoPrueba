@@ -14,16 +14,18 @@ public class InventoryService {
 
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
-
+    //Inyecciones
     public InventoryService(InventoryRepository inventoryRepository, ProductRepository productRepository) {
         this.inventoryRepository = inventoryRepository;
         this.productRepository = productRepository;
     }
 
+    // guardar un inventario
     public void save(Inventory inventory) {
         inventoryRepository.save(inventory);
     }
 
+    // mostrar todos los productos
     public List<InventoryDto> getAll() {
         return inventoryRepository.findAll().stream().map(inv -> {
             InventoryDto dto = new InventoryDto();
@@ -33,10 +35,16 @@ public class InventoryService {
         }).collect(Collectors.toList());
     }
 
-    public void addProduct(Integer inventoryId, Product product) {
-        Inventory inventory = inventoryRepository.findById(inventoryId)
-                .orElseThrow(() -> new RuntimeException("Inventario con ID " + inventoryId + " no encontrado"));
-        product.setInventory(inventory);
-        productRepository.save(product);
+    // borrar un inventario
+    public void delete(Integer inventoryId){
+        inventoryRepository.deleteById(inventoryId);
+    }
+
+    // actualizar un inventario
+    public void updateInv(Integer inventoryId, Inventory newInventory){
+        Inventory inventory=inventoryRepository.findById(inventoryId)
+                .orElseThrow(()-> new RuntimeException("Inventario de ID" +inventoryId+ " no encontrado"));
+
+        inventory.setName(newInventory.getName());
     }
 }
