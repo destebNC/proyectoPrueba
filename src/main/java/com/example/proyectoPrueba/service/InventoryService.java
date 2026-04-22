@@ -28,10 +28,13 @@ public class InventoryService {
     // mostrar todos los productos
     public List<InventoryDto> getAll() {
         return inventoryRepository.findAll().stream()
-                .map(inv -> new InventoryDto(
-                        inv.getName(),
-                        inv.getProductList()
-                ))
+                .map(inv -> {
+                    InventoryDto dto = new InventoryDto();
+                    dto.setId(inv.getId());
+                    dto.setName(inv.getName());
+                    dto.setProducts(inv.getProductList());
+                    return dto;
+                })
                 .toList();
     }
 
@@ -52,9 +55,11 @@ public class InventoryService {
         Inventory inventory = inventoryRepository.findById(inventoryId)
                 .orElseThrow(() -> new RuntimeException("Inventario no encontrado"));
 
-        return new InventoryDto(
-                inventory.getName(),
-                inventory.getProductList()
-        );
+        InventoryDto dto = new InventoryDto();
+        dto.setId(inventory.getId());
+        dto.setName(inventory.getName());
+        dto.setProducts(inventory.getProductList());
+
+        return dto;
     }
 }

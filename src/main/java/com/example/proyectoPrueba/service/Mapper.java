@@ -21,12 +21,12 @@ public class Mapper {
     }
 
     public InventoryDto inventoryToDto(Inventory inventory) {
+        InventoryDto dto = new InventoryDto();
 
-        List<Product> products = inventory.getProductList();
+        dto.setId(inventory.getId());
+        dto.setName(inventory.getName());
+        dto.setProducts(inventory.getProductList());
 
-        return new InventoryDto(
-                inventory.getName(),
-                products
-        );
+        return dto;
     }
 }

@@ -16,17 +16,17 @@ public class ProductController {
         this.productService=productService;
     }
 
-    @GetMapping("/products")
+    @GetMapping
     public List<ProductDto> getAll(){
         return productService.getAll();
     }
 
-    @GetMapping("/products/{product_id}")
+    @GetMapping("/{product_id}")
     public ProductDto getById(@PathVariable("product_id") Integer id){
         return productService.getById(id);
     }
 
-    @PostMapping("/products/{inventoryId}")
+    @PostMapping("/{inventory_id}")
     public String addProductToInventory(
             @PathVariable("inventory_id") Integer inventoryId,
             @RequestBody Product product) {
@@ -34,7 +34,7 @@ public class ProductController {
         return "Producto añadido al inventario con éxito";
     }
 
-    @DeleteMapping("/products/{inventoryId}/{product_id}")
+    @DeleteMapping("/{inventory_id}/{product_id}")
     public String delete(
             @PathVariable("product_id") Integer productId,
             @PathVariable("inventory_id") Integer inventoryId){
@@ -42,7 +42,7 @@ public class ProductController {
         return "El producto con id: "+productId+" ha sido eliminado con éxito del inventario de ID " +inventoryId;
     }
 
-    @PutMapping("/products/{inventory_id}/{product_id}")
+    @PutMapping("/{inventory_id}/{product_id}")
     public String update(
             @PathVariable("inventory_id") Integer inventoryId,
             @PathVariable("product_id") Integer productId,
