@@ -27,12 +27,12 @@ public class InventoryService {
 
     // mostrar todos los productos
     public List<InventoryDto> getAll() {
-        return inventoryRepository.findAll().stream().map(inv -> {
-            InventoryDto dto = new InventoryDto();
-            dto.setId(inv.getId());
-            dto.setName(inv.getName());
-            return dto;
-        }).collect(Collectors.toList());
+        return inventoryRepository.findAll().stream()
+                .map(inv -> new InventoryDto(
+                        inv.getName(),
+                        inv.getProductList()
+                ))
+                .toList();
     }
 
     // borrar un inventario
@@ -46,5 +46,15 @@ public class InventoryService {
                 .orElseThrow(()-> new RuntimeException("Inventario de ID" +inventoryId+ " no encontrado"));
 
         inventory.setName(newInventory.getName());
+    }
+
+    public InventoryDto getById(Integer inventoryId) {
+        Inventory inventory = inventoryRepository.findById(inventoryId)
+                .orElseThrow(() -> new RuntimeException("Inventario no encontrado"));
+
+        return new InventoryDto(
+                inventory.getName(),
+                inventory.getProductList()
+        );
     }
 }

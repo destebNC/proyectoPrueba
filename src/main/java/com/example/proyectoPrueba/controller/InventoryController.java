@@ -17,18 +17,25 @@ public class InventoryController {
         this.inventoryService = inventoryService;
     }
 
-    @PostMapping("/addInv")
+    @PostMapping("/inv")
     public String create(@RequestBody Inventory inventory) {
         inventoryService.save(inventory);
         return "Inventario creado";
     }
 
-    @GetMapping("/inventories")
+    @GetMapping("/inv")
     public List<InventoryDto> getAll() {
         return inventoryService.getAll();
     }
 
-    @DeleteMapping("/deleteInv/{inventory_id}")
+    @GetMapping("/inv/{inventory_id}")
+    public InventoryDto getById(
+            @PathVariable("inventory_id") Integer inventoryId
+    ){
+        return inventoryService.getById(inventoryId);
+    }
+
+    @DeleteMapping("/inv/{inventory_id}")
     public String deleteInv(
             @PathVariable("inventory_id") Integer inventoryId
     ){
@@ -36,7 +43,7 @@ public class InventoryController {
         return "Inventario eliminado con éxito";
     }
 
-    @PutMapping("/updateInv/{inventory_id}")
+    @PutMapping("/inv/{inventory_id}")
     public String update(
             @PathVariable("inventory_id")Integer inventoryId,
             @RequestBody Inventory inventory

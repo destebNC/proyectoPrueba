@@ -12,21 +12,23 @@ import java.util.stream.Collectors;
 @Service
 public class ProductService {
 
+    private final Mapper mapper;
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository, InventoryRepository inventoryRepository) {
+    public ProductService(ProductRepository productRepository, InventoryRepository inventoryRepository, Mapper mapper) {
         this.productRepository = productRepository;
         this.inventoryRepository=inventoryRepository;
+        this.mapper=mapper;
     }
 
     public List<ProductDto> getAll() {
-        return productRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
+        return productRepository.findAll().stream().map(mapper::productToDto).collect(Collectors.toList());
     }
 
     public ProductDto getById(Integer id) {
         Product product = productRepository.findById(id).orElseThrow();
-        return convertToDto(product);
+        return mapper.productToDto(product);
     }
     public void delete(Integer inventoryId, Integer productId) {
         Inventory inventory=inventoryRepository.findById(inventoryId)
@@ -41,14 +43,6 @@ public class ProductService {
         inventoryRepository.save(inventory);
     }
 
-    private ProductDto convertToDto(Product product) {
-        ProductDto dto = new ProductDto();
-        dto.setId(product.getId());
-        dto.setName(product.getName());
-        dto.setPrice(product.getPrice());
-        dto.setWeight(product.getWeight());
-        return dto;
-    }
 
     public void updateProduct(Integer inventoryId, Integer productId, Product newProduct){
         //buscar inventario por id
