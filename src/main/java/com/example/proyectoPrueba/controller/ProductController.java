@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -21,20 +20,22 @@ public class ProductController {
         return productService.getAll();
     }
 
-    @GetMapping("/products/{product_id}")
-    public ProductDto getById(@PathVariable("product_id") Integer id){
-        return productService.getById(id);
+    @GetMapping("/products/{inventory_id}/{product_id}")
+    public ProductDto getById(
+            @PathVariable("product_id") Integer product_id,
+            @PathVariable("inventory_id") Integer inventoryId){
+        return productService.getById(product_id,inventoryId);
     }
 
-    @PostMapping("/products/{inventoryId}")
+    @PostMapping("/products/{inventory_id}")
     public String addProductToInventory(
             @PathVariable("inventory_id") Integer inventoryId,
-            @RequestBody Product product) {
+            @RequestBody ProductDto product) {
         productService.addProduct(inventoryId, product);
         return "Producto añadido al inventario con éxito";
     }
 
-    @DeleteMapping("/products/{inventoryId}/{product_id}")
+    @DeleteMapping("/products/{inventory_id}/{product_id}")
     public String delete(
             @PathVariable("product_id") Integer productId,
             @PathVariable("inventory_id") Integer inventoryId){

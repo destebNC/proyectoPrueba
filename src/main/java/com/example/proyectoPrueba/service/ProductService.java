@@ -6,6 +6,8 @@ import com.example.proyectoPrueba.model.Product;
 import com.example.proyectoPrueba.repository.InventoryRepository;
 import com.example.proyectoPrueba.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,58 +18,78 @@ public class ProductService {
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository, InventoryRepository inventoryRepository, Mapper mapper) {
+    public ProductService(ProductRepository productRepository,
+                          InventoryRepository inventoryRepository,
+                          Mapper mapper) {
         this.productRepository = productRepository;
-        this.inventoryRepository=inventoryRepository;
-        this.mapper=mapper;
+        this.inventoryRepository = inventoryRepository;
+        this.mapper = mapper;
     }
 
     public List<ProductDto> getAll() {
-        return productRepository.findAll().stream().map(mapper::productToDto).collect(Collectors.toList());
+        return productRepository.findAll()
+                .stream()
+                .map(mapper::productToDto)
+                .collect(Collectors.toList());
     }
 
-    public ProductDto getById(Integer id) {
-        Product product = productRepository.findById(id).orElseThrow();
+    public ProductDto getById(Integer productId, Integer inventoryId) {
+
+        Inventory inventory = inventoryRepository.findById(inventoryId)
+                .orElseThrow(() -> new RuntimeException("Inventario no encontrado"));
+
+        Product product = inventory.getProductList().stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException(
+                        "Producto no encontrado en este inventario"
+                ));
+
         return mapper.productToDto(product);
     }
-    public void delete(Integer inventoryId, Integer productId) {
-        Inventory inventory=inventoryRepository.findById(inventoryId)
-                .orElseThrow(()-> new RuntimeException(("Inventario con ID "+inventoryId+ " no encontrado")));
 
-        Product product=inventory.getProductList().stream()
-                .filter(p->p.getId().equals(productId))
-                .findFirst()
-                .orElseThrow(()->new RuntimeException("Producto con ID "+productId+ " en el inventario de ID "+inventoryId+ " no ha sido encontrado"));
+    public void delete(Integer inventoryId, Integer productId){
 
-        inventory.getProductList().remove(product);
-        inventoryRepository.save(inventory);
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        if (product.getInventory() == null ||
+                !product.getInventory().getId().equals(inventoryId)) {
+            throw new RuntimeException("Ese producto no pertenece a ese inventario");
+        }
+
+        productRepository.delete(product);
     }
 
-
     public void updateProduct(Integer inventoryId, Integer productId, Product newProduct){
-        //buscar inventario por id
-        Inventory inventory=inventoryRepository.findById(inventoryId)
-                .orElseThrow(()-> new RuntimeException("Inventario con ID " +inventoryId+ " no encontrado"));
-        //buscar el producto por id
-        Product product=inventory.getProductList().stream()
-                .filter(p->p.getId().equals(productId))
-                .findFirst()
-                .orElseThrow(()-> new RuntimeException("Producto con ID " +productId+ " en el inventario de ID "+inventoryId+ " no ha sido encontrado"));
 
-        // guardar nuevos datos
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
+        if (product.getInventory() == null ||
+                !product.getInventory().getId().equals(inventoryId)) {
+            throw new RuntimeException("Ese producto no pertenece a ese inventario");
+        }
+
         product.setName(newProduct.getName());
         product.setPrice(newProduct.getPrice());
         product.setWeight(newProduct.getWeight());
 
-        inventoryRepository.save(inventory);
+        productRepository.save(product);
     }
 
-    public void addProduct(Integer inventoryId, Product product){
-        Inventory inventory=inventoryRepository.findById(inventoryId)
-                .orElseThrow(()-> new RuntimeException("No se ha podido encontrar el inventario de ID "+inventoryId));
+    public void addProduct(Integer inventoryId, ProductDto productDto){
 
-        Product savedProduct= productRepository.save(product);
-        inventory.getProductList().add(savedProduct);
-        inventoryRepository.save(inventory);
+        Inventory inventory = inventoryRepository.findById(inventoryId)
+                .orElseThrow(() -> new RuntimeException("Inventario no encontrado"));
+
+        Product product = new Product();
+        product.setName(productDto.name());
+        product.setPrice(productDto.price());
+        product.setWeight(productDto.weight());
+
+        product.setInventory(inventory);
+
+        productRepository.save(product);
     }
 }

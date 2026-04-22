@@ -13,7 +13,7 @@ public class Inventory {
 
     private String name;
 
-    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> productList;
 
     public Inventory() {
