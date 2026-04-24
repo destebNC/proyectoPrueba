@@ -1,0 +1,292 @@
+openapi: 3.0.3
+info:
+  title: API de Gestión de Inventarios (Versión Records)
+  description: API RESTful para la gestión de inventarios y productos asociados.
+  version: 1.0.0
+  contact:
+    name: Equipo de Desarrollo
+    email: dev@tudominio.com
+servers:
+  - url: http://localhost:8080
+    description: Servidor Local Spring Boot
+
+tags:
+  - name: Inventarios
+    description: Operaciones relacionadas con la creación y gestión de inventarios.
+  - name: Productos
+    description: Operaciones de mantenimiento del catálogo de artículos.
+
+paths:
+  # ==========================================
+  # ENDPOINTS DE INVENTARIOS (/inv)
+  # ==========================================
+  /inv:
+    post:
+      tags:
+        - Inventarios
+      summary: Crear un nuevo inventario
+      description: Registra un nuevo contenedor de inventario en la base de datos.
+      operationId: createInventory
+      requestBody:
+        description: Objeto de la base de datos (Inventory)
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+      responses:
+        '200':
+          description: Inventario creado
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Inventario creado"
+
+    get:
+      tags:
+        - Inventarios
+      summary: Obtener todos los inventarios
+      description: Devuelve una lista completa de todos los inventarios almacenados, incluyendo sus productos anidados.
+      operationId: getAllInventories
+      responses:
+        '200':
+          description: Lista de inventarios con sus productos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InventoryDto'
+
+  /inv/{inventory_id}:
+    parameters:
+      - name: inventory_id
+        in: path
+        required: true
+        description: ID único del inventario
+        schema:
+          type: integer
+
+    get:
+      tags:
+        - Inventarios
+      summary: Obtener un inventario por ID
+      description: Busca y devuelve la información de un único inventario basándose en su identificador.
+      operationId: getInventoryById
+      responses:
+        '200':
+          description: Detalle del inventario
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+
+    put:
+      tags:
+        - Inventarios
+      summary: Actualizar un inventario
+      description: Modifica los datos principales de un inventario existente, como su nombre.
+      operationId: updateInventory
+      requestBody:
+        description: Objeto del inventario con los datos modificados
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+      responses:
+        '200':
+          description: Inventario actualizado
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Los datos del inventario han sido actualizados con éxito"
+
+    delete:
+      tags:
+        - Inventarios
+      summary: Eliminar un inventario
+      description: Borra permanentemente un inventario y todos los productos asociados a él.
+      operationId: deleteInventory
+      responses:
+        '200':
+          description: Inventario eliminado con éxito
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Inventario eliminado con éxito"
+
+  # ==========================================
+  # ENDPOINTS DE PRODUCTOS (/products)
+  # ==========================================
+  /products:
+    get:
+      tags:
+        - Productos
+      summary: Obtener todos los productos globales
+      description: Recupera el stock completo de todos los productos del sistema sin importar su inventario.
+      operationId: getAllProducts
+      responses:
+        '200':
+          description: Catálogo completo de productos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductDto'
+
+  /products/{inventory_id}:
+    post:
+      tags:
+        - Productos
+      summary: Añadir producto a un inventario
+      description: Crea un nuevo producto y lo enlaza automáticamente al inventario especificado en la ruta.
+      operationId: addProductToInventory
+      parameters:
+        - name: inventory_id
+          in: path
+          required: true
+          description: ID del inventario de destino
+          schema:
+            type: integer
+      requestBody:
+        description: Objeto DTO con los detalles del nuevo producto
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDto'
+      responses:
+        '200':
+          description: Producto añadido
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Producto añadido al inventario con éxito"
+
+  /products/{inventory_id}/{product_id}:
+    parameters:
+      - name: inventory_id
+        in: path
+        required: true
+        description: ID del inventario padre
+        schema:
+          type: integer
+      - name: product_id
+        in: path
+        required: true
+        description: ID del producto
+        schema:
+          type: integer
+
+    get:
+      tags:
+        - Productos
+      summary: Obtener producto de un inventario
+      description: Recupera los detalles de un producto específico, validando primero que pertenezca al inventario indicado.
+      operationId: getProductByIdAndInventory
+      responses:
+        '200':
+          description: Detalle del producto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDto'
+
+    put:
+      tags:
+        - Productos
+      summary: Actualizar un producto
+      description: Sobrescribe los datos de un artículo específico dentro de un inventario dado.
+      operationId: updateProduct
+      requestBody:
+        description: Objeto del producto con la nueva información
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Producto actualizado
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Producto actualizado con éxito"
+
+    delete:
+      tags:
+        - Productos
+      summary: Eliminar un producto
+      description: Elimina de la base de datos un producto específico.
+      operationId: deleteProduct
+      responses:
+        '200':
+          description: Producto eliminado
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "El producto ha sido eliminado con éxito"
+
+components:
+  schemas:
+    InventoryDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Ferretería"
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductDto'
+
+    ProductDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "Manzanas"
+        price:
+          type: number
+          format: float
+          example: 2.5
+        weight:
+          type: number
+          format: float
+          example: 1.0
+
+    Inventory:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "Frutería"
+
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 10
+        name:
+          type: string
+          example: "Naranjas"
+        price:
+          type: number
+          format: float
+          example: 3.2
+        weight:
+          type: number
+          format: float
+          example: 2.5
