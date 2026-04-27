@@ -1,6 +1,7 @@
-package com.example.proyectoPrueba;
+package com.example.proyectoPrueba.controller;
 
 import com.example.proyectoPrueba.dto.TokenResponse;
+import com.example.proyectoPrueba.security.JwtUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     @PostMapping("/login")
     public TokenResponse login() {
-        String fakeJwt = "token-de-prueba";
-        return new TokenResponse(fakeJwt);
+        String jwt = JwtUtil.generateToken("user");
+        return new TokenResponse(jwt);
     }
 }
