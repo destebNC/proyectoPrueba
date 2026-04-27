@@ -1,5 +1,6 @@
-package com.example.proyectoPrueba;
+package com.example.proyectoPrueba.security;
 
+import com.example.proyectoPrueba.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

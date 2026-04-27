@@ -1,5 +1,6 @@
-package com.example.proyectoPrueba;
+package com.example.proyectoPrueba.security;
 
+import com.example.proyectoPrueba.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
