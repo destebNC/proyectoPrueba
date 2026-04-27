@@ -6,7 +6,7 @@ import com.example.proyectoPrueba.model.Product;
 import com.example.proyectoPrueba.service.InventoryService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-
+//Linea de prueba jc
 @RestController
 @RequestMapping
 public class InventoryController {
