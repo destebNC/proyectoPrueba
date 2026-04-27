@@ -70,3 +70,4 @@ Para ejecutar el cliente:
 * Diferencia entre DTOs y modelos de dominio.
 * Manejo de respuestas HTTP y errores en un cliente generado.
 * Importancia de documentar correctamente una API para automatizar su uso.
+* Seguridad básica en Spring
