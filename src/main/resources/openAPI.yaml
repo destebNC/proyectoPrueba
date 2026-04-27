@@ -1,5 +1,6 @@
 openapi: 3.0.3
-
+security:
+  - bearerAuth: []
 info:
   title: API de Gestión de Inventarios (Versión Mejorada)
   description: |
@@ -209,6 +210,12 @@ paths:
 # COMPONENTS
 # ==========================================
 components:
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 
   responses:
     NotFoundError:
