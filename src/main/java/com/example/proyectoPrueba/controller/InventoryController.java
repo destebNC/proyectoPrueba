@@ -1,3 +1,5 @@
+// Linea prueba 1
+
 package com.example.proyectoPrueba.controller;
 
 import com.example.proyectoPrueba.dto.InventoryDto;
