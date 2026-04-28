@@ -30,8 +30,6 @@ public class ProductService {
         return productRepository.findAll().stream().map(mapper::productToDto).collect(Collectors.toList());
     }
 
-    // --- NUEVOS MÉTODOS DE PAGINACIÓN ---
-
     // 1. Paginar TODOS los productos de la base de datos de golpe
     public Page<ProductDto> getAllPaginated(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -45,8 +43,6 @@ public class ProductService {
         Page<Product> productPage = productRepository.findByInventoryId(inventoryId, pageable);
         return productPage.map(mapper::productToDto);
     }
-
-    // ------------------------------------
 
     public ProductDto getById(Integer id) {
         Product product = productRepository.findById(id).orElseThrow();

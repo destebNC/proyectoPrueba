@@ -17,8 +17,6 @@ public class ProductController {
         this.productService=productService;
     }
 
-    // --- MÉTODOS ORIGINALES ---
-
     @GetMapping
     public List<ProductDto> getAll(){
         return productService.getAll();
@@ -53,8 +51,6 @@ public class ProductController {
         productService.updateProduct(inventoryId,productId, product);
         return "Producto actualizado con éxito";
     }
-
-    // --- NUEVOS MÉTODOS DE PAGINACIÓN ---
 
     // 1. Obtener TODOS los productos paginados
     @GetMapping("/paginated")
