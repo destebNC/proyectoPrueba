@@ -5,6 +5,10 @@ import com.example.proyectoPrueba.model.Inventory;
 import com.example.proyectoPrueba.model.Product;
 import com.example.proyectoPrueba.repository.InventoryRepository;
 import com.example.proyectoPrueba.repository.ProductRepository;
+import com.example.proyectoPrueba.service.Mapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,10 +30,25 @@ public class ProductService {
         return productRepository.findAll().stream().map(mapper::productToDto).collect(Collectors.toList());
     }
 
+    // 1. Paginar TODOS los productos de la base de datos de golpe
+    public Page<ProductDto> getAllPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> productPage = productRepository.findAll(pageable);
+        return productPage.map(mapper::productToDto);
+    }
+
+    // 2. Paginar SOLO los productos que pertenecen a un inventario concreto
+    public Page<ProductDto> getProductsByInventoryPaginated(Integer inventoryId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Product> productPage = productRepository.findByInventoryId(inventoryId, pageable);
+        return productPage.map(mapper::productToDto);
+    }
+
     public ProductDto getById(Integer id) {
         Product product = productRepository.findById(id).orElseThrow();
         return mapper.productToDto(product);
     }
+
     public void delete(Integer inventoryId, Integer productId) {
         Inventory inventory=inventoryRepository.findById(inventoryId)
                 .orElseThrow(()-> new RuntimeException(("Inventario con ID "+inventoryId+ " no encontrado")));
@@ -42,7 +61,6 @@ public class ProductService {
         inventory.getProductList().remove(product);
         inventoryRepository.save(inventory);
     }
-
 
     public void updateProduct(Integer inventoryId, Integer productId, Product newProduct){
         //buscar inventario por id
