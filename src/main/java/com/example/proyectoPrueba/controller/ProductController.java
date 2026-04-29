@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/products")
 public class ProductController {
 
     private final ProductService productService;
@@ -16,27 +17,25 @@ public class ProductController {
         this.productService=productService;
     }
 
-    @GetMapping("/products")
+    @GetMapping
     public List<ProductDto> getAll(){
         return productService.getAll();
     }
 
-    @GetMapping("/products/{inventory_id}/{product_id}")
-    public ProductDto getById(
-            @PathVariable("product_id") Integer product_id,
-            @PathVariable("inventory_id") Integer inventoryId){
-        return productService.getById(product_id,inventoryId);
+    @GetMapping("/{product_id}")
+    public ProductDto getById(@PathVariable("product_id") Integer id){
+        return productService.getById(id);
     }
 
-    @PostMapping("/products/{inventory_id}")
+    @PostMapping("/{inventory_id}")
     public String addProductToInventory(
             @PathVariable("inventory_id") Integer inventoryId,
-            @RequestBody ProductDto product) {
+            @RequestBody Product product) {
         productService.addProduct(inventoryId, product);
         return "Producto añadido al inventario con éxito";
     }
 
-    @DeleteMapping("/products/{inventory_id}/{product_id}")
+    @DeleteMapping("/{inventory_id}/{product_id}")
     public String delete(
             @PathVariable("product_id") Integer productId,
             @PathVariable("inventory_id") Integer inventoryId){
@@ -44,7 +43,7 @@ public class ProductController {
         return "El producto con id: "+productId+" ha sido eliminado con éxito del inventario de ID " +inventoryId;
     }
 
-    @PutMapping("/products/{inventory_id}/{product_id}")
+    @PutMapping("/{inventory_id}/{product_id}")
     public String update(
             @PathVariable("inventory_id") Integer inventoryId,
             @PathVariable("product_id") Integer productId,
