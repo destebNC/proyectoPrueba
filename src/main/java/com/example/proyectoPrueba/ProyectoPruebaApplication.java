@@ -1,12 +1,11 @@
 package com.example.proyectoPrueba;
 
+import com.fasterxml.jackson.databind.Module; // Importación necesaria
+import org.openapitools.jackson.nullable.JsonNullableModule; // Importación necesaria
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
-//ESTA LINEA ES UN COMMIT DE PRUEBA
-//LINEA DE PRUEBA JC
-//UNA PRUEBA MAS
-//JUAN CARLo gracias
 @SpringBootApplication
 public class ProyectoPruebaApplication {
 
@@ -14,4 +13,9 @@ public class ProyectoPruebaApplication {
 		SpringApplication.run(ProyectoPruebaApplication.class, args);
 	}
 
+	// AÑADE ESTO AQUÍ (Lo hemos "rescatado" de la clase generada)
+	@Bean
+	public Module jsonNullableModule() {
+		return new JsonNullableModule();
+	}
 }
