@@ -17,11 +17,13 @@ public class InventoryService {
 
     private final InventoryRepository inventoryRepository;
     private final ProductRepository productRepository;
+    private final Mapper mapper; // 1. Añadimos el Mapper
 
     // Inyecciones
-    public InventoryService(InventoryRepository inventoryRepository, ProductRepository productRepository) {
+    public InventoryService(InventoryRepository inventoryRepository, ProductRepository productRepository, Mapper mapper) {
         this.inventoryRepository = inventoryRepository;
         this.productRepository = productRepository;
+        this.mapper = mapper; // 2. Lo inyectamos en el constructor
     }
 
     // guardar un inventario
@@ -32,13 +34,7 @@ public class InventoryService {
     // mostrar todos los productos (Sin paginar, por si lo necesitas en otro lado)
     public List<InventoryDto> getAll() {
         return inventoryRepository.findAll().stream()
-                .map(inv -> {
-                    InventoryDto dto = new InventoryDto();
-                    dto.setId(inv.getId());
-                    dto.setName(inv.getName());
-                    dto.setProducts(inv.getProductList());
-                    return dto;
-                })
+                .map(mapper::inventoryToDto) // <-- SOLUCIONADO: Usamos el traductor
                 .toList();
     }
 
@@ -49,14 +45,8 @@ public class InventoryService {
         // 2. Traemos la página de la base de datos
         Page<Inventory> inventoryPage = inventoryRepository.findAll(pageable);
 
-        // 3. Mapeamos cada inventario a DTO usando tu misma lógica
-        return inventoryPage.map(inv -> {
-            InventoryDto dto = new InventoryDto();
-            dto.setId(inv.getId());
-            dto.setName(inv.getName());
-            dto.setProducts(inv.getProductList());
-            return dto;
-        });
+        // 3. SOLUCIONADO: Mapeamos cada inventario a DTO usando el Mapper
+        return inventoryPage.map(mapper::inventoryToDto);
     }
 
     // borrar un inventario
@@ -70,7 +60,7 @@ public class InventoryService {
                 .orElseThrow(()-> new RuntimeException("Inventario de ID " + inventoryId + " no encontrado"));
 
         inventory.setName(newInventory.getName());
-        inventoryRepository.save(inventory); // Añado el save() que suele ser necesario para guardar el cambio
+        inventoryRepository.save(inventory);
     }
 
     // buscar por ID
@@ -78,11 +68,7 @@ public class InventoryService {
         Inventory inventory = inventoryRepository.findById(inventoryId)
                 .orElseThrow(() -> new RuntimeException("Inventario no encontrado"));
 
-        InventoryDto dto = new InventoryDto();
-        dto.setId(inventory.getId());
-        dto.setName(inventory.getName());
-        dto.setProducts(inventory.getProductList());
-
-        return dto;
+        // SOLUCIONADO: Devolvemos el DTO traducido directamente
+        return mapper.inventoryToDto(inventory);
     }
 }
