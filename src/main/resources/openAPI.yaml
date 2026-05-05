@@ -2,24 +2,26 @@ openapi: 3.0.3
 security:
   - bearerAuth: []
 info:
-  title: API de Gestión de Inventarios (Versión Mejorada)
+  title: Inventory Management API (Enhanced Version)
   description: |
-    API RESTful para la gestión de inventarios y productos.
-    Permite crear, consultar, actualizar y eliminar inventarios y productos asociados.
+    RESTful API for inventory and product management.
+    Allows creating, querying, updating and deleting inventories and associated products.
   version: 1.0.0
   contact:
-    name: Equipo de Desarrollo
-    email: dev@tudominio.com
+    name: Development Team
+    email: dev@yourdomain.com
 
 servers:
   - url: http://localhost:8080
-    description: Servidor local Spring Boot
+    description: Local Spring Boot server
 
 tags:
-  - name: Inventarios
-    description: Operaciones sobre inventarios
-  - name: Productos
-    description: Operaciones sobre productos
+  - name: Authentication
+    description: User authentication operations
+  - name: Inventories
+    description: Inventory operations
+  - name: Products
+    description: Product operations
 
 # ==========================================
 # PATHS
@@ -28,9 +30,9 @@ paths:
 
   /auth/login:
     post:
-      tags: [ Autenticación ]
-      summary: Login de usuario
-      description: Devuelve un JWT válido para acceder a la API
+      tags: [ Authentication ]
+      summary: User login
+      description: Returns a valid JWT to access the API
       operationId: login
       requestBody:
         required: true
@@ -40,18 +42,18 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
-          description: Token generado correctamente
+          description: Token generated successfully
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TokenResponse'
         '401':
-          description: Credenciales incorrectas
+          description: Invalid credentials
   /inv:
     post:
-      tags: [Inventarios]
-      summary: Crear inventario
-      description: Crea un nuevo inventario en el sistema.
+      tags: [Inventories]
+      summary: Create inventory
+      description: Creates a new inventory in the system.
       operationId: createInventory
       requestBody:
         required: true
@@ -61,20 +63,20 @@ paths:
               $ref: '#/components/schemas/Inventory'
       responses:
         '201':
-          description: Inventario creado correctamente
+          description: Inventory created successfully
         '400':
           $ref: '#/components/responses/BadRequestError'
         '500':
           $ref: '#/components/responses/InternalServerError'
 
     get:
-      tags: [Inventarios]
-      summary: Listar inventarios
-      description: Devuelve todos los inventarios con sus productos.
+      tags: [Inventories]
+      summary: List inventories
+      description: Returns all inventories with their products.
       operationId: getAllInventories
       responses:
         '200':
-          description: Lista de inventarios
+          description: List of inventories
           content:
             application/json:
               schema:
@@ -93,12 +95,12 @@ paths:
           type: integer
 
     get:
-      tags: [Inventarios]
-      summary: Obtener inventario por ID
+      tags: [Inventories]
+      summary: Get inventory by ID
       operationId: getInventoryById
       responses:
         '200':
-          description: Inventario encontrado
+          description: Inventory found
           content:
             application/json:
               schema:
@@ -107,8 +109,8 @@ paths:
           $ref: '#/components/responses/NotFoundError'
 
     put:
-      tags: [Inventarios]
-      summary: Actualizar inventario
+      tags: [Inventories]
+      summary: Update inventory
       operationId: updateInventory
       requestBody:
         required: true
@@ -118,30 +120,30 @@ paths:
               $ref: '#/components/schemas/Inventory'
       responses:
         '200':
-          description: Inventario actualizado
+          description: Inventory updated
         '400':
           $ref: '#/components/responses/BadRequestError'
         '404':
           $ref: '#/components/responses/NotFoundError'
 
     delete:
-      tags: [Inventarios]
-      summary: Eliminar inventario
+      tags: [Inventories]
+      summary: Delete inventory
       operationId: deleteInventory
       responses:
         '200':
-          description: Inventario eliminado
+          description: Inventory deleted
         '404':
           $ref: '#/components/responses/NotFoundError'
 
   /products:
     get:
-      tags: [Productos]
-      summary: Listar productos
+      tags: [Products]
+      summary: List products
       operationId: getAllProducts
       responses:
         '200':
-          description: Lista de productos
+          description: List of products
           content:
             application/json:
               schema:
@@ -151,8 +153,8 @@ paths:
 
   /products/{inventory_id}:
     post:
-      tags: [Productos]
-      summary: Crear producto en inventario
+      tags: [Products]
+      summary: Create product in inventory
       operationId: addProductToInventory
       parameters:
         - name: inventory_id
@@ -168,7 +170,7 @@ paths:
               $ref: '#/components/schemas/ProductDto'
       responses:
         '201':
-          description: Producto creado
+          description: Product created
         '400':
           $ref: '#/components/responses/BadRequestError'
         '404':
@@ -188,12 +190,12 @@ paths:
           type: integer
 
     get:
-      tags: [Productos]
-      summary: Obtener producto
+      tags: [Products]
+      summary: Get product
       operationId: getProductByIdAndInventory
       responses:
         '200':
-          description: Producto encontrado
+          description: Product found
           content:
             application/json:
               schema:
@@ -202,8 +204,8 @@ paths:
           $ref: '#/components/responses/NotFoundError'
 
     put:
-      tags: [Productos]
-      summary: Actualizar producto
+      tags: [Products]
+      summary: Update product
       operationId: updateProduct
       requestBody:
         required: true
@@ -213,17 +215,17 @@ paths:
               $ref: '#/components/schemas/Product'
       responses:
         '200':
-          description: Producto actualizado
+          description: Product updated
         '404':
           $ref: '#/components/responses/NotFoundError'
 
     delete:
-      tags: [Productos]
-      summary: Eliminar producto
+      tags: [Products]
+      summary: Delete product
       operationId: deleteProduct
       responses:
         '200':
-          description: Producto eliminado
+          description: Product deleted
         '404':
           $ref: '#/components/responses/NotFoundError'
 
@@ -240,7 +242,7 @@ components:
 
   responses:
     NotFoundError:
-      description: Recurso no encontrado
+      description: Resource not found
       content:
         application/json:
           schema:
@@ -248,10 +250,10 @@ components:
             properties:
               message:
                 type: string
-                example: "Recurso no encontrado"
+                example: "Resource not found"
 
     BadRequestError:
-      description: Petición incorrecta
+      description: Bad request
       content:
         application/json:
           schema:
@@ -259,10 +261,10 @@ components:
             properties:
               message:
                 type: string
-                example: "Datos inválidos"
+                example: "Invalid data"
 
     InternalServerError:
-      description: Error interno del servidor
+      description: Internal server error
       content:
         application/json:
           schema:
@@ -270,7 +272,7 @@ components:
             properties:
               message:
                 type: string
-                example: "Error interno"
+                example: "Internal error"
 
   schemas:
 
@@ -302,7 +304,7 @@ components:
       properties:
         name:
           type: string
-          example: "Ferretería"
+          example: "Hardware Store"
         products:
           type: array
           items:
@@ -316,7 +318,7 @@ components:
       properties:
         name:
           type: string
-          example: "Manzanas"
+          example: "Apples"
         price:
           type: number
           format: float
@@ -337,7 +339,7 @@ components:
           example: 1
         name:
           type: string
-          example: "Frutería"
+          example: "Grocery Store"
 
     Product:
       type: object
@@ -350,7 +352,7 @@ components:
           example: 10
         name:
           type: string
-          example: "Naranjas"
+          example: "Oranges"
         price:
           type: number
           format: float
