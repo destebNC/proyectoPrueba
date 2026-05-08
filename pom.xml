@@ -80,6 +80,12 @@
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.6.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.annotation</groupId>
+					<artifactId>javax.annotation-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -165,6 +171,7 @@
 								<serializationLibrary>jackson</serializationLibrary>
 								<dateLibrary>java8</dateLibrary>
 								<interfaceOnly>true</interfaceOnly>
+								<generateTests>false</generateTests>
 							</configOptions>
 
 							<additionalProperties>
@@ -243,6 +250,18 @@
 					</execution>
 
 				</executions>
+			</plugin>
+
+			<!-- Configuración para excluir el test generado por OpenAPI Generator -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.5</version> <!-- Asegúrate de usar la misma versión que se muestra en tu log -->
+				<configuration>
+					<excludes>
+						<exclude>com.example.generated.invoker.OpenApiGeneratorApplicationTests</exclude>
+					</excludes>
+				</configuration>
 			</plugin>
 
 		</plugins>
