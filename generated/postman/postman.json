@@ -1,0 +1,217 @@
+{
+	"info": {
+		"name": "API de Inventario - Fase 2",
+		"description": {
+		    "content": "Gestión de productos de supermercado siguiendo el estándar Contract-First y RFC 7807.",
+		    "type": "text/markdown"
+		},
+		"version": "1.0.0",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+	        {
+	            "name": "Productos",
+	            "item": [
+	                        {
+    "name": "/agregar",
+                "description": "Registra un nuevo producto en la base de datos de inventario.",
+                 "item": [
+                            {
+                                "name": "Crear nuevo producto",
+                                "request": {
+                                    "method": "POST",
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json",
+                                            "description": "",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "{\n \"id\": \"<number>\",\n \"name\": \"<string>\",\n \"price\": \"<number>\",\n \"weight\": \"<number>\"\n}",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/agregar",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "agregar"
+                                        ],
+                                        "variable": [
+                                        ],
+                                        "query": [
+                                        ]
+                                    },
+                                    "description": "Registra un nuevo producto en la base de datos de inventario."
+                                }
+                            }
+                            ]
+                        },
+	                        {
+    "name": "/delete/:product_id",
+                "description": "Elimina un producto de forma permanente mediante su ID.",
+                 "item": [
+                            {
+                                "name": "Eliminar producto",
+                                "request": {
+                                    "method": "DELETE",
+                                    "header": [
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/delete/:product_id",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "delete",
+                                            ":product_id"
+                                        ],
+                                        "variable": [
+                                            {
+                                                "key": "productId",
+                                                "value": "",
+                                                "description": "ID del producto a borrar"
+                                            }
+                                        ],
+                                        "query": [
+                                        ]
+                                    },
+                                    "description": "Elimina un producto de forma permanente mediante su ID."
+                                }
+                            }
+                            ]
+                        },
+	                        {
+    "name": "/productos",
+                "description": "Retorna todos los productos registrados actualmente.",
+                 "item": [
+                            {
+                                "name": "Listar inventario",
+                                "request": {
+                                    "method": "GET",
+                                    "header": [
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/productos",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "productos"
+                                        ],
+                                        "variable": [
+                                        ],
+                                        "query": [
+                                        ]
+                                    },
+                                    "description": "Retorna todos los productos registrados actualmente."
+                                }
+                            }
+                            ]
+                        },
+	                        {
+    "name": "/productos/:product_id",
+                "description": "Obtiene los detalles de un producto específico mediante su identificador.",
+                 "item": [
+                            {
+                                "name": "Buscar por ID",
+                                "request": {
+                                    "method": "GET",
+                                    "header": [
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/productos/:product_id",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "productos",
+                                            ":product_id"
+                                        ],
+                                        "variable": [
+                                            {
+                                                "key": "productId",
+                                                "value": "",
+                                                "description": "Identificador único del producto"
+                                            }
+                                        ],
+                                        "query": [
+                                        ]
+                                    },
+                                    "description": "Obtiene los detalles de un producto específico mediante su identificador."
+                                }
+                            }
+                            ]
+                        }
+	                    ]
+	        }
+    ],
+    
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+        }
+	]
+}
+

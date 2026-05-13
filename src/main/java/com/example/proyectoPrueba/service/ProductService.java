@@ -1,56 +1,54 @@
 package com.example.proyectoPrueba.service;
 
-import com.example.proyectoPrueba.dto.InventoryDTO;
 import com.example.proyectoPrueba.dto.ProductDto;
-import com.example.proyectoPrueba.model.Inventory;
 import com.example.proyectoPrueba.model.Product;
 import com.example.proyectoPrueba.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
-    private final Mapper mapper;
-    private final ProductRepository repository;
 
-    public ProductService(Mapper mapper, ProductRepository repository) {
-        this.mapper = mapper;
-        this.repository=repository;
+    private final ProductRepository productRepository;
+
+    // Inyectamos el repositorio que creamos en el paso anterior
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
-    public ProductDto productToProductDTO(Product product){
-
-        return new ProductDto(
-                product.getName(),
-                product.getPrice()
-        );
-    }
-
-    public InventoryDTO inventarioToDTO (Inventory inventory){
-        return mapper.toDto(inventory);
-    }
-
-    public Product save(Product product){
-        return repository.save(product);
-    }
-
+    /**
+     * Obtiene todos los productos de la base de datos y los convierte a DTO.
+     */
     public List<ProductDto> getAll() {
-        return repository.findAll()
+        return productRepository.findAll()
                 .stream()
-                .map(mapper::toDto)
-                .toList();
+                .map(product -> new ProductDto(product.getName(), product.getPrice()))
+                .collect(Collectors.toList());
     }
 
-    public ProductDto getById(Integer id){
-        Product product = repository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Producto no encontrado"));
-        return mapper.toDto(product);
+    /**
+     * Busca un producto por ID. Si no lo encuentra, lanza una excepción
+     * para que el GlobalExceptionHandler la capture.
+     */
+    public ProductDto getById(Integer id) {
+        return productRepository.findById(id)
+                .map(product -> new ProductDto(product.getName(), product.getPrice()))
+                .orElseThrow(() -> new RuntimeException("El producto con ID " + id + " no existe en la base de datos"));
     }
 
-    public void delete(Integer id){
-        Product product = repository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Producto no encontrado"));
-        repository.deleteById(id);
+    /**
+     * Guarda el producto físicamente en la base de datos MySQL.
+     */
+    public void save(Product product) {
+        productRepository.save(product);
+    }
+
+    /**
+     * Elimina el producto de la base de datos por su ID.
+     */
+    public void delete(Integer id) {
+        productRepository.deleteById(id);
     }
 }
