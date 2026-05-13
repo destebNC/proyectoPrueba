@@ -1,23 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<<<<<<< HEAD
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-=======
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-
->>>>>>> 650bc9126e1e31b017924211b09a6f701ac34e53
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-<<<<<<< HEAD
 		<version>4.0.5</version>
-=======
-		<version>3.3.5</version>
->>>>>>> 650bc9126e1e31b017924211b09a6f701ac34e53
 		<relativePath/>
 	</parent>
 
@@ -31,124 +20,30 @@
 	</properties>
 
 	<dependencies>
-
-		<!-- WEB -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
-		<!-- SECURITY -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-
-		<!-- JPA -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-<<<<<<< HEAD
-
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.5.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>jakarta.annotation</groupId>
-			<artifactId>jakarta.annotation-api</artifactId>
-			<version>3.0.0</version>
-		</dependency>
-=======
->>>>>>> 650bc9126e1e31b017924211b09a6f701ac34e53
-
-		<!-- MYSQL -->
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
-<<<<<<< HEAD
-=======
-		<!-- LOMBOK -->
->>>>>>> 650bc9126e1e31b017924211b09a6f701ac34e53
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-
-<<<<<<< HEAD
-=======
-		<!-- JSON -->
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.11.0</version>
-		</dependency>
-
-		<!-- OKHTTP -->
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>okhttp</artifactId>
-			<version>4.12.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.squareup.okhttp3</groupId>
-			<artifactId>logging-interceptor</artifactId>
-			<version>4.12.0</version>
-		</dependency>
-
-		<!-- OPENAPI / SWAGGER -->
-		<dependency>
-			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.6.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>javax.annotation</groupId>
-					<artifactId>javax.annotation-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openapitools</groupId>
-			<artifactId>jackson-databind-nullable</artifactId>
-			<version>0.2.6</version>
-		</dependency>
-
-		<!-- IMPORTANTE: SOLO JAKARTA (NO javax) -->
-		<dependency>
-			<groupId>jakarta.annotation</groupId>
-			<artifactId>jakarta.annotation-api</artifactId>
-			<version>2.1.1</version>
-		</dependency>
-
-		<!-- JWT -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
 			<version>0.11.5</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
 			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-jackson</artifactId>
@@ -156,32 +51,55 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- TEST -->
->>>>>>> 650bc9126e1e31b017924211b09a6f701ac34e53
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.annotation</groupId>
+			<artifactId>jakarta.annotation-api</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<version>0.2.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-<<<<<<< HEAD
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-validation</artifactId>
-=======
->>>>>>> 650bc9126e1e31b017924211b09a6f701ac34e53
+			<artifactId>spring-boot-test-autoconfigure</artifactId>
+			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 	<build>
 		<plugins>
-
-			<!-- SPRING BOOT -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-<<<<<<< HEAD
 			</plugin>
 
 			<plugin>
@@ -264,135 +182,4 @@
 			</plugin>
 		</plugins>
 	</build>
-=======
-				<configuration>
-					<mainClass>com.example.proyectoPrueba.ProyectoPruebaApplication</mainClass>
-				</configuration>
-			</plugin>
-
-			<!-- OPENAPI GENERATOR (CORREGIDO JAKARTA) -->
-			<plugin>
-				<groupId>org.openapitools</groupId>
-				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<version>7.19.0</version>
-
-				<executions>
-					<execution>
-						<id>generate-api</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openAPI.yaml</inputSpec>
-
-							<generatorName>spring</generatorName>
-
-							<apiPackage>com.example.generated.api</apiPackage>
-							<modelPackage>com.example.generated.model</modelPackage>
-							<invokerPackage>com.example.generated.invoker</invokerPackage>
-
-							<configOptions>
-								<useJakartaEe>true</useJakartaEe>
-								<library>spring-boot</library>
-								<serializationLibrary>jackson</serializationLibrary>
-								<dateLibrary>java8</dateLibrary>
-								<interfaceOnly>true</interfaceOnly>
-								<generateTests>false</generateTests>
-							</configOptions>
-
-							<additionalProperties>
-								<useJakartaEe>true</useJakartaEe>
-								<skipDefaultInterface>true</skipDefaultInterface>
-							</additionalProperties>
-
-						</configuration>
-					</execution>
-
-					<!-- Generación del cliente TypeScript -->
-					<execution>
-						<id>generate-typescript-client</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openAPI.yaml</inputSpec>
-							<generatorName>typescript-fetch</generatorName>
-							<output>${project.build.directory}/generated-sources/openapi/clients/typescript</output>
-							<configOptions>
-								<npmName>@supermercado/api-client</npmName>
-								<npmVersion>1.0.0</npmVersion>
-								<supportsES6>true</supportsES6>
-							</configOptions>
-						</configuration>
-					</execution>
-
-					<!-- Generación del cliente C# -->
-					<execution>
-						<id>generate-csharp-client</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openAPI.yaml</inputSpec>
-							<generatorName>csharp</generatorName>
-							<output>${project.build.directory}/generated-sources/openapi/clients/csharp</output>
-							<configOptions>
-								<packageName>Supermercado.ApiClient</packageName>
-								<targetFramework>net8.0</targetFramework>
-							</configOptions>
-						</configuration>
-					</execution>
-
-					<!-- Generación del cliente PHP -->
-					<execution>
-						<id>generate-php-client</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openAPI.yaml</inputSpec>
-							<generatorName>php</generatorName>
-							<output>${project.build.directory}/generated-sources/openapi/clients/php</output>
-							<configOptions>
-								<packageName>Supermercado\\ApiClient</packageName>
-							</configOptions>
-						</configuration>
-					</execution>
-
-					<!-- Generación de la colección Postman -->
-					<execution>
-						<id>generate-postman-collection</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openAPI.yaml</inputSpec>
-							<generatorName>postman-collection</generatorName>
-							<output>${project.build.directory}/generated-sources/openapi/postman</output>
-							<configOptions>
-								<outputFile>Supermercado-API.json</outputFile>
-							</configOptions>
-						</configuration>
-					</execution>
-
-				</executions>
-			</plugin>
-
-			<!-- Configuración para excluir el test generado por OpenAPI Generator -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.2.5</version> <!-- Asegúrate de usar la misma versión que se muestra en tu log -->
-				<configuration>
-					<excludes>
-						<exclude>com.example.generated.invoker.OpenApiGeneratorApplicationTests</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
-		</plugins>
-	</build>
-
->>>>>>> 650bc9126e1e31b017924211b09a6f701ac34e53
 </project>

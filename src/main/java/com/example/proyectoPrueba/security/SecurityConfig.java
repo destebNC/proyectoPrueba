@@ -1,6 +1,5 @@
 package com.example.proyectoPrueba.security;
 
-import com.example.proyectoPrueba.security.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,16 +21,21 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         return http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.disable()) // Desactivar CSRF para APIs con JWT
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        // 1. Permitir acceso libre al Login y Registro
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/inv").hasRole("ADMIN")
-                        .requestMatchers("/products/**").hasAnyRole("ADMIN", "USER")
+                        // 2. Permitir acceso libre a Swagger (Documentación)
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        // 3. Rutas de Inventario: Solo para ADMIN
+                        .requestMatchers("/api/inv/**").hasRole("ADMIN")
+                        // 4. Rutas de Productos: Para USER y ADMIN
+                        .requestMatchers("/api/productos/**").hasAnyRole("ADMIN", "USER")
+                        // 5. Cualquier otra cosa requiere estar logueado
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
