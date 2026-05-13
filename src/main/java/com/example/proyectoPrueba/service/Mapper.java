@@ -1,30 +1,32 @@
 package com.example.proyectoPrueba.service;
 
-import com.example.proyectoPrueba.dto.InventoryDTO;
+import com.example.proyectoPrueba.dto.InventoryDto;
 import com.example.proyectoPrueba.dto.ProductDto;
 import com.example.proyectoPrueba.model.Inventory;
 import com.example.proyectoPrueba.model.Product;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class Mapper {
 
-    public ProductDto toDto(Product product) {
+    public ProductDto productToDto(Product product) {
         return new ProductDto(
                 product.getName(),
-                product.getPrice()
+                product.getPrice(),
+                product.getWeight()
         );
     }
 
-    public InventoryDTO toDto(Inventory inventory) {
-
-        List<ProductDto> productosDto = inventory.getProductList()
-                .stream()
-                .map(this::toDto)
-                .toList();
-
-        return new InventoryDTO(productosDto);
+    public InventoryDto inventoryToDto(Inventory inventory) {
+        return new InventoryDto(
+                inventory.getName(),
+                inventory.getProductList()
+                        .stream()
+                        .map(this::productToDto)
+                        .collect(Collectors.toList())
+        );
     }
 }
