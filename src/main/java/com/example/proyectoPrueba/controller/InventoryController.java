@@ -38,8 +38,8 @@ public class InventoryController {
 
     // --- ENDPOINTS DE INVENTARIOS ---
     @PostMapping("/inv")
-    public String create(@Valid @RequestBody Inventory inventory) {
-        inventoryService.save(inventory);
+    public String create(@Valid @RequestBody InventoryDto inventoryDto) {
+        inventoryService.save(inventoryDto);
         return "Inventario creado";
     }
 

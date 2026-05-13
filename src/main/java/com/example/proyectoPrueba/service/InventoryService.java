@@ -27,7 +27,8 @@ public class InventoryService {
     }
 
     // guardar un inventario
-    public void save(Inventory inventory) {
+    public void save(InventoryDto inventoryDto) {
+        Inventory inventory = mapper.dtoToInventory(inventoryDto);
         inventoryRepository.save(inventory);
     }
 
