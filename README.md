@@ -52,7 +52,7 @@ npm run build
 cd clients/csharp
 # Instalar OpenAPI Generator CLI
 openapi-generator-cli generate \
-  -i ../../../src/main/resources/openAPI.yaml \
+  -i ../../../src/main/resources/openapi.yaml \
   -g csharp-netcore \
   -o . \
   -c config.json
