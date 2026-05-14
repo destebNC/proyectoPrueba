@@ -48,9 +48,3 @@ src/main/java/org/openapitools/client/model/LoginRequest.java
 src/main/java/org/openapitools/client/model/Product.java
 src/main/java/org/openapitools/client/model/ProductDto.java
 src/main/java/org/openapitools/client/model/RegisterRequest.java
-src/test/java/org/openapitools/client/api/AuthenticationApiTest.java
-src/test/java/org/openapitools/client/api/InventoriesApiTest.java
-src/test/java/org/openapitools/client/api/ProductsApiTest.java
-src/test/java/org/openapitools/client/model/InventoryTest.java
-src/test/java/org/openapitools/client/model/LoginRequestTest.java
-src/test/java/org/openapitools/client/model/RegisterRequestTest.java

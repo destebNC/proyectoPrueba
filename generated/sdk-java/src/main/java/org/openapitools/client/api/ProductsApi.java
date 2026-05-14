@@ -28,6 +28,7 @@ import java.io.IOException;
 
 
 import org.openapitools.client.model.Product;
+import org.openapitools.client.model.ProductDto;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -109,6 +110,7 @@ public class ProductsApi {
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
+            "application/json"
         };
         final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
         if (localVarAccept != null) {
@@ -135,6 +137,7 @@ public class ProductsApi {
     /**
      * List all products
      * 
+     * @return List&lt;ProductDto&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
@@ -142,14 +145,15 @@ public class ProductsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public void apiProductosGet() throws ApiException {
-        apiProductosGetWithHttpInfo();
+    public List<ProductDto> apiProductosGet() throws ApiException {
+        ApiResponse<List<ProductDto>> localVarResp = apiProductosGetWithHttpInfo();
+        return localVarResp.getData();
     }
 
     /**
      * List all products
      * 
-     * @return ApiResponse&lt;Void&gt;
+     * @return ApiResponse&lt;List&lt;ProductDto&gt;&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
@@ -157,9 +161,10 @@ public class ProductsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Void> apiProductosGetWithHttpInfo() throws ApiException {
+    public ApiResponse<List<ProductDto>> apiProductosGetWithHttpInfo() throws ApiException {
         okhttp3.Call localVarCall = apiProductosGetValidateBeforeCall(null);
-        return localVarApiClient.execute(localVarCall);
+        Type localVarReturnType = new TypeToken<List<ProductDto>>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
 
     /**
@@ -174,10 +179,11 @@ public class ProductsApi {
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call apiProductosGetAsync(final ApiCallback<Void> _callback) throws ApiException {
+    public okhttp3.Call apiProductosGetAsync(final ApiCallback<List<ProductDto>> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = apiProductosGetValidateBeforeCall(_callback);
-        localVarApiClient.executeAsync(localVarCall, _callback);
+        Type localVarReturnType = new TypeToken<List<ProductDto>>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**

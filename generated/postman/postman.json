@@ -165,6 +165,12 @@
                                 "request": {
                                     "method": "GET",
                                     "header": [
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
                                     ],
                                     "body": {
                                         "mode": "raw",

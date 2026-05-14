@@ -16,7 +16,7 @@ All URIs are relative to *http://localhost:8080*
 
 <a id="apiProductosGet"></a>
 # **apiProductosGet**
-> apiProductosGet()
+> List&lt;ProductDto&gt; apiProductosGet()
 
 List all products
 
@@ -41,7 +41,8 @@ public class Example {
 
     ProductsApi apiInstance = new ProductsApi(defaultClient);
     try {
-      apiInstance.apiProductosGet();
+      List<ProductDto> result = apiInstance.apiProductosGet();
+      System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling ProductsApi#apiProductosGet");
       System.err.println("Status code: " + e.getCode());
@@ -58,7 +59,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-null (empty response body)
+[**List&lt;ProductDto&gt;**](ProductDto.md)
 
 ### Authorization
 
@@ -67,7 +68,7 @@ null (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/json
 
 ### HTTP response details
 | Status code | Description | Response headers |
