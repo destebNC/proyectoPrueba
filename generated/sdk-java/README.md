@@ -2,7 +2,7 @@
 
 Inventory Management API
 - API version: 1.0.0
-  - Build date: 2026-05-14T10:12:08.100314800+02:00[Europe/Madrid]
+  - Build date: 2026-05-14T12:28:49.142053700+02:00[Europe/Madrid]
   - Generator version: 7.4.0
 
 RESTful API for inventory and product management, secured with JWT.

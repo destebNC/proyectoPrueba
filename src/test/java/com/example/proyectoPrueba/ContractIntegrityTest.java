@@ -1,36 +1,34 @@
 package com.example.proyectoPrueba;
 
-import org.junit.jupiter.api.BeforeEach;
+import com.atlassian.oai.validator.mockmvc.OpenApiValidationMatchers;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
 class ContractIntegrityTest {
 
     @Autowired
-    private WebApplicationContext webApplicationContext;
-
     private MockMvc mockMvc;
 
-    @BeforeEach
-    void setup() {
-        // Esto levanta MockMvc sin necesidad de la anotación que fallaba
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
-    }
-
     @Test
-    void shouldReturnProblemDetailOnInvalidId() throws Exception {
-        mockMvc.perform(get("/productos/9999"))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.title").exists())
-                .andExpect(jsonPath("$.status").value(500));
+    @WithMockUser(roles = "ADMIN") // Le decimos al Portero que simulemos ser ADMIN
+    void getProductsShouldMatchOpenApiContract() throws Exception {
+        // Usamos la ruta exacta donde pusiste tu archivo maestro
+        String openApiPath = "src/main/resources/static/openapi.yaml";
+
+        // 1. Hacemos una petición GET a nuestra propia API simulada
+        mockMvc.perform(get("/api/productos"))
+                // 2. Esperamos que nos devuelva un 200 OK
+                .andExpect(status().isOk())
+                // 3. LA MAGIA: Verificamos que la respuesta cumple estrictamente con el YAML
+                .andExpect(OpenApiValidationMatchers.openApi().isValid(openApiPath));
     }
 }
