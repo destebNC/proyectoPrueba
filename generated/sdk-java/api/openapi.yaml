@@ -1,203 +1,358 @@
-openapi: 3.0.1
+openapi: 3.0.3
 info:
-  contact:
-    email: soporte@ejemplo.com
-    name: Soporte Técnico API
-  description: Gestión de productos de supermercado siguiendo el estándar Contract-First
-    y RFC 7807.
-  title: API de Inventario - Fase 2
+  description: "RESTful API for inventory and product management, secured with JWT."
+  title: Inventory Management API
   version: 1.0.0
 servers:
-- description: Servidor local de desarrollo
-  url: http://localhost:8080
+- url: http://localhost:8080
+security:
+- bearerAuth: []
 tags:
-- description: Operaciones relacionadas con el inventario de la tienda.
-  name: Productos
+- name: Authentication
+- name: Inventories
+- name: Products
 paths:
-  /agregar:
+  /auth/register:
     post:
-      description: Registra un nuevo producto en la base de datos de inventario.
-      operationId: agregarProducto
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+      security: []
+      summary: User registration
+      tags:
+      - Authentication
+      x-content-type: application/json
+      x-accepts: application/json
+  /auth/login:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+      security: []
+      summary: User login
+      tags:
+      - Authentication
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/inv:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Inventory'
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Create inventory
+      tags:
+      - Inventories
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/inv/paginated:
+    get:
+      parameters:
+      - explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 0
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: size
+        required: false
+        schema:
+          default: 10
+          type: integer
+        style: form
+      responses:
+        "200":
+          description: OK
+      summary: List inventories (Paginated)
+      tags:
+      - Inventories
+      x-accepts: application/json
+  /api/inv/{id}:
+    delete:
+      parameters:
+      - explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          description: OK
+      summary: Delete inventory
+      tags:
+      - Inventories
+      x-accepts: application/json
+  /api/productos:
+    get:
+      responses:
+        "200":
+          description: OK
+      summary: List all products
+      tags:
+      - Products
+      x-accepts: application/json
+    post:
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Product'
-        description: Objeto producto que se va a guardar
         required: true
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                type: string
-          description: Producto creado con éxito
-        "400":
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetail'
-          description: Error de validación en la petición.
-        "500":
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetail'
-          description: Error interno del servidor.
-      summary: Crear nuevo producto
+          description: OK
+      summary: Add standalone product
       tags:
-      - Productos
+      - Products
       x-content-type: application/json
-      x-accepts: "application/json,application/problem+json"
-  /productos:
-    get:
-      description: Retorna todos los productos registrados actualmente.
-      operationId: listarProductos
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/ProductDto'
-                type: array
-          description: Lista de productos obtenida
-      summary: Listar inventario
-      tags:
-      - Productos
       x-accepts: application/json
-  /productos/{product_id}:
+  /api/productos/paginated:
     get:
-      description: Obtiene los detalles de un producto específico mediante su identificador.
-      operationId: buscarProductoPorId
       parameters:
-      - description: Identificador único del producto
-        explode: false
+      - explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 0
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: size
+        required: false
+        schema:
+          default: 10
+          type: integer
+        style: form
+      responses:
+        "200":
+          description: OK
+      summary: List all products (Paginated)
+      tags:
+      - Products
+      x-accepts: application/json
+  /api/productos/{product_id}:
+    get:
+      parameters:
+      - explode: false
         in: path
         name: product_id
         required: true
         schema:
-          format: int32
           type: integer
         style: simple
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductDto'
-          description: Producto encontrado
-        "404":
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetail'
-          description: El recurso no existe.
-      summary: Buscar por ID
+          description: OK
+      summary: Get product by ID
       tags:
-      - Productos
-      x-accepts: "application/json,application/problem+json"
-  /delete/{product_id}:
+      - Products
+      x-accepts: application/json
+  /api/productos/inv/{inventory_id}:
+    post:
+      parameters:
+      - explode: false
+        in: path
+        name: inventory_id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Add product to specific inventory
+      tags:
+      - Products
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/productos/inv/{inventory_id}/paginated:
+    get:
+      parameters:
+      - explode: false
+        in: path
+        name: inventory_id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - explode: true
+        in: query
+        name: page
+        required: false
+        schema:
+          default: 0
+          type: integer
+        style: form
+      - explode: true
+        in: query
+        name: size
+        required: false
+        schema:
+          default: 10
+          type: integer
+        style: form
+      responses:
+        "200":
+          description: OK
+      summary: List products from inventory (Paginated)
+      tags:
+      - Products
+      x-accepts: application/json
+  /api/productos/inv/{inventory_id}/{product_id}:
     delete:
-      description: Elimina un producto de forma permanente mediante su ID.
-      operationId: borrarProducto
       parameters:
-      - description: ID del producto a borrar
-        explode: false
+      - explode: false
+        in: path
+        name: inventory_id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - explode: false
         in: path
         name: product_id
         required: true
         schema:
-          format: int32
           type: integer
         style: simple
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                type: string
-          description: Producto eliminado
-        "404":
-          content:
-            application/problem+json:
-              schema:
-                $ref: '#/components/schemas/ProblemDetail'
-          description: El recurso no existe.
-      summary: Eliminar producto
+          description: OK
+      summary: Delete product from inventory
       tags:
-      - Productos
-      x-accepts: "application/json,application/problem+json"
+      - Products
+      x-accepts: application/json
+    put:
+      parameters:
+      - explode: false
+        in: path
+        name: inventory_id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      - explode: false
+        in: path
+        name: product_id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      responses:
+        "200":
+          description: OK
+      summary: Update product in inventory
+      tags:
+      - Products
+      x-content-type: application/json
+      x-accepts: application/json
 components:
-  responses:
-    BadRequest:
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/ProblemDetail'
-      description: Error de validación en la petición.
-    NotFound:
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/ProblemDetail'
-      description: El recurso no existe.
-    InternalError:
-      content:
-        application/problem+json:
-          schema:
-            $ref: '#/components/schemas/ProblemDetail'
-      description: Error interno del servidor.
   schemas:
+    RegisterRequest:
+      example:
+        password: password
+        role: role
+        username: username
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+      type: object
+    LoginRequest:
+      example:
+        password: password
+        username: username
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      type: object
     Product:
       example:
-        price: 1.5
-        name: Manzana
-        weight: 0.5
+        price: 6.027456183070403
+        name: name
+        weight: 1.4658129805029452
         id: 0
       properties:
         id:
-          format: int32
-          readOnly: true
           type: integer
         name:
-          example: Manzana
           type: string
         price:
-          example: 1.5
-          format: float
+          format: double
           type: number
         weight:
-          example: 0.5
-          format: float
+          format: double
           type: number
       required:
       - name
       - price
       type: object
     ProductDto:
-      example:
-        price: 0.8008282
-        name: name
       properties:
         name:
           type: string
         price:
-          format: float
+          format: double
+          type: number
+        weight:
+          format: double
           type: number
       type: object
-    ProblemDetail:
+    Inventory:
+      example:
+        name: name
+        id: 0
       properties:
-        type:
-          format: uri
-          type: string
-        title:
-          type: string
-        status:
+        id:
           type: integer
-        detail:
-          type: string
-        instance:
+        name:
           type: string
       type: object
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
 

@@ -1,6 +1,6 @@
 
 
-# Product
+# Inventory
 
 
 ## Properties
@@ -8,9 +8,7 @@
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
 |**id** | **Integer** |  |  [optional] |
-|**name** | **String** |  |  |
-|**price** | **Double** |  |  |
-|**weight** | **Double** |  |  [optional] |
+|**name** | **String** |  |  [optional] |
 
 
 

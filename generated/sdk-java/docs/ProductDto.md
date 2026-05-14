@@ -8,7 +8,8 @@
 | Name | Type | Description | Notes |
 |------------ | ------------- | ------------- | -------------|
 |**name** | **String** |  |  [optional] |
-|**price** | **Float** |  |  [optional] |
+|**price** | **Double** |  |  [optional] |
+|**weight** | **Double** |  |  [optional] |
 
 
 

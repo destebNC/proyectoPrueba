@@ -47,79 +47,56 @@ import java.util.Set;
 import org.openapitools.client.JSON;
 
 /**
- * ProductDto
+ * LoginRequest
  */
 @jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-05-14T10:12:08.100314800+02:00[Europe/Madrid]", comments = "Generator version: 7.4.0")
-public class ProductDto {
-  public static final String SERIALIZED_NAME_NAME = "name";
-  @SerializedName(SERIALIZED_NAME_NAME)
-  private String name;
+public class LoginRequest {
+  public static final String SERIALIZED_NAME_USERNAME = "username";
+  @SerializedName(SERIALIZED_NAME_USERNAME)
+  private String username;
 
-  public static final String SERIALIZED_NAME_PRICE = "price";
-  @SerializedName(SERIALIZED_NAME_PRICE)
-  private Double price;
+  public static final String SERIALIZED_NAME_PASSWORD = "password";
+  @SerializedName(SERIALIZED_NAME_PASSWORD)
+  private String password;
 
-  public static final String SERIALIZED_NAME_WEIGHT = "weight";
-  @SerializedName(SERIALIZED_NAME_WEIGHT)
-  private Double weight;
-
-  public ProductDto() {
+  public LoginRequest() {
   }
 
-  public ProductDto name(String name) {
-    this.name = name;
+  public LoginRequest username(String username) {
+    this.username = username;
     return this;
   }
 
    /**
-   * Get name
-   * @return name
+   * Get username
+   * @return username
   **/
   @jakarta.annotation.Nullable
-  public String getName() {
-    return name;
+  public String getUsername() {
+    return username;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setUsername(String username) {
+    this.username = username;
   }
 
 
-  public ProductDto price(Double price) {
-    this.price = price;
+  public LoginRequest password(String password) {
+    this.password = password;
     return this;
   }
 
    /**
-   * Get price
-   * @return price
+   * Get password
+   * @return password
   **/
   @jakarta.annotation.Nullable
-  public Double getPrice() {
-    return price;
+  public String getPassword() {
+    return password;
   }
 
-  public void setPrice(Double price) {
-    this.price = price;
-  }
-
-
-  public ProductDto weight(Double weight) {
-    this.weight = weight;
-    return this;
-  }
-
-   /**
-   * Get weight
-   * @return weight
-  **/
-  @jakarta.annotation.Nullable
-  public Double getWeight() {
-    return weight;
-  }
-
-  public void setWeight(Double weight) {
-    this.weight = weight;
+  public void setPassword(String password) {
+    this.password = password;
   }
 
 
@@ -132,24 +109,22 @@ public class ProductDto {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ProductDto productDto = (ProductDto) o;
-    return Objects.equals(this.name, productDto.name) &&
-        Objects.equals(this.price, productDto.price) &&
-        Objects.equals(this.weight, productDto.weight);
+    LoginRequest loginRequest = (LoginRequest) o;
+    return Objects.equals(this.username, loginRequest.username) &&
+        Objects.equals(this.password, loginRequest.password);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, price, weight);
+    return Objects.hash(username, password);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ProductDto {\n");
-    sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    price: ").append(toIndentedString(price)).append("\n");
-    sb.append("    weight: ").append(toIndentedString(weight)).append("\n");
+    sb.append("class LoginRequest {\n");
+    sb.append("    username: ").append(toIndentedString(username)).append("\n");
+    sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -172,9 +147,8 @@ public class ProductDto {
   static {
     // a set of all properties/fields (JSON key names)
     openapiFields = new HashSet<String>();
-    openapiFields.add("name");
-    openapiFields.add("price");
-    openapiFields.add("weight");
+    openapiFields.add("username");
+    openapiFields.add("password");
 
     // a set of required properties/fields (JSON key names)
     openapiRequiredFields = new HashSet<String>();
@@ -184,25 +158,28 @@ public class ProductDto {
   * Validates the JSON Element and throws an exception if issues found
   *
   * @param jsonElement JSON Element
-  * @throws IOException if the JSON Element is invalid with respect to ProductDto
+  * @throws IOException if the JSON Element is invalid with respect to LoginRequest
   */
   public static void validateJsonElement(JsonElement jsonElement) throws IOException {
       if (jsonElement == null) {
-        if (!ProductDto.openapiRequiredFields.isEmpty()) { // has required fields but JSON element is null
-          throw new IllegalArgumentException(String.format("The required field(s) %s in ProductDto is not found in the empty JSON string", ProductDto.openapiRequiredFields.toString()));
+        if (!LoginRequest.openapiRequiredFields.isEmpty()) { // has required fields but JSON element is null
+          throw new IllegalArgumentException(String.format("The required field(s) %s in LoginRequest is not found in the empty JSON string", LoginRequest.openapiRequiredFields.toString()));
         }
       }
 
       Set<Map.Entry<String, JsonElement>> entries = jsonElement.getAsJsonObject().entrySet();
       // check to see if the JSON string contains additional fields
       for (Map.Entry<String, JsonElement> entry : entries) {
-        if (!ProductDto.openapiFields.contains(entry.getKey())) {
-          throw new IllegalArgumentException(String.format("The field `%s` in the JSON string is not defined in the `ProductDto` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
+        if (!LoginRequest.openapiFields.contains(entry.getKey())) {
+          throw new IllegalArgumentException(String.format("The field `%s` in the JSON string is not defined in the `LoginRequest` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
         }
       }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
-      if ((jsonObj.get("name") != null && !jsonObj.get("name").isJsonNull()) && !jsonObj.get("name").isJsonPrimitive()) {
-        throw new IllegalArgumentException(String.format("Expected the field `name` to be a primitive type in the JSON string but got `%s`", jsonObj.get("name").toString()));
+      if ((jsonObj.get("username") != null && !jsonObj.get("username").isJsonNull()) && !jsonObj.get("username").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format("Expected the field `username` to be a primitive type in the JSON string but got `%s`", jsonObj.get("username").toString()));
+      }
+      if ((jsonObj.get("password") != null && !jsonObj.get("password").isJsonNull()) && !jsonObj.get("password").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format("Expected the field `password` to be a primitive type in the JSON string but got `%s`", jsonObj.get("password").toString()));
       }
   }
 
@@ -210,22 +187,22 @@ public class ProductDto {
     @SuppressWarnings("unchecked")
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-       if (!ProductDto.class.isAssignableFrom(type.getRawType())) {
-         return null; // this class only serializes 'ProductDto' and its subtypes
+       if (!LoginRequest.class.isAssignableFrom(type.getRawType())) {
+         return null; // this class only serializes 'LoginRequest' and its subtypes
        }
        final TypeAdapter<JsonElement> elementAdapter = gson.getAdapter(JsonElement.class);
-       final TypeAdapter<ProductDto> thisAdapter
-                        = gson.getDelegateAdapter(this, TypeToken.get(ProductDto.class));
+       final TypeAdapter<LoginRequest> thisAdapter
+                        = gson.getDelegateAdapter(this, TypeToken.get(LoginRequest.class));
 
-       return (TypeAdapter<T>) new TypeAdapter<ProductDto>() {
+       return (TypeAdapter<T>) new TypeAdapter<LoginRequest>() {
            @Override
-           public void write(JsonWriter out, ProductDto value) throws IOException {
+           public void write(JsonWriter out, LoginRequest value) throws IOException {
              JsonObject obj = thisAdapter.toJsonTree(value).getAsJsonObject();
              elementAdapter.write(out, obj);
            }
 
            @Override
-           public ProductDto read(JsonReader in) throws IOException {
+           public LoginRequest read(JsonReader in) throws IOException {
              JsonElement jsonElement = elementAdapter.read(in);
              validateJsonElement(jsonElement);
              return thisAdapter.fromJsonTree(jsonElement);
@@ -236,18 +213,18 @@ public class ProductDto {
   }
 
  /**
-  * Create an instance of ProductDto given an JSON string
+  * Create an instance of LoginRequest given an JSON string
   *
   * @param jsonString JSON string
-  * @return An instance of ProductDto
-  * @throws IOException if the JSON string is invalid with respect to ProductDto
+  * @return An instance of LoginRequest
+  * @throws IOException if the JSON string is invalid with respect to LoginRequest
   */
-  public static ProductDto fromJson(String jsonString) throws IOException {
-    return JSON.getGson().fromJson(jsonString, ProductDto.class);
+  public static LoginRequest fromJson(String jsonString) throws IOException {
+    return JSON.getGson().fromJson(jsonString, LoginRequest.class);
   }
 
  /**
-  * Convert an instance of ProductDto to an JSON string
+  * Convert an instance of LoginRequest to an JSON string
   *
   * @return JSON string
   */

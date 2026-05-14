@@ -47,10 +47,10 @@ import java.util.Set;
 import org.openapitools.client.JSON;
 
 /**
- * Product
+ * Inventory
  */
 @jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-05-14T10:12:08.100314800+02:00[Europe/Madrid]", comments = "Generator version: 7.4.0")
-public class Product {
+public class Inventory {
   public static final String SERIALIZED_NAME_ID = "id";
   @SerializedName(SERIALIZED_NAME_ID)
   private Integer id;
@@ -59,18 +59,10 @@ public class Product {
   @SerializedName(SERIALIZED_NAME_NAME)
   private String name;
 
-  public static final String SERIALIZED_NAME_PRICE = "price";
-  @SerializedName(SERIALIZED_NAME_PRICE)
-  private Double price;
-
-  public static final String SERIALIZED_NAME_WEIGHT = "weight";
-  @SerializedName(SERIALIZED_NAME_WEIGHT)
-  private Double weight;
-
-  public Product() {
+  public Inventory() {
   }
 
-  public Product id(Integer id) {
+  public Inventory id(Integer id) {
     this.id = id;
     return this;
   }
@@ -89,7 +81,7 @@ public class Product {
   }
 
 
-  public Product name(String name) {
+  public Inventory name(String name) {
     this.name = name;
     return this;
   }
@@ -98,51 +90,13 @@ public class Product {
    * Get name
    * @return name
   **/
-  @jakarta.annotation.Nonnull
+  @jakarta.annotation.Nullable
   public String getName() {
     return name;
   }
 
   public void setName(String name) {
     this.name = name;
-  }
-
-
-  public Product price(Double price) {
-    this.price = price;
-    return this;
-  }
-
-   /**
-   * Get price
-   * @return price
-  **/
-  @jakarta.annotation.Nonnull
-  public Double getPrice() {
-    return price;
-  }
-
-  public void setPrice(Double price) {
-    this.price = price;
-  }
-
-
-  public Product weight(Double weight) {
-    this.weight = weight;
-    return this;
-  }
-
-   /**
-   * Get weight
-   * @return weight
-  **/
-  @jakarta.annotation.Nullable
-  public Double getWeight() {
-    return weight;
-  }
-
-  public void setWeight(Double weight) {
-    this.weight = weight;
   }
 
 
@@ -155,26 +109,22 @@ public class Product {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Product product = (Product) o;
-    return Objects.equals(this.id, product.id) &&
-        Objects.equals(this.name, product.name) &&
-        Objects.equals(this.price, product.price) &&
-        Objects.equals(this.weight, product.weight);
+    Inventory inventory = (Inventory) o;
+    return Objects.equals(this.id, inventory.id) &&
+        Objects.equals(this.name, inventory.name);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, price, weight);
+    return Objects.hash(id, name);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Product {\n");
+    sb.append("class Inventory {\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
-    sb.append("    price: ").append(toIndentedString(price)).append("\n");
-    sb.append("    weight: ").append(toIndentedString(weight)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -199,44 +149,33 @@ public class Product {
     openapiFields = new HashSet<String>();
     openapiFields.add("id");
     openapiFields.add("name");
-    openapiFields.add("price");
-    openapiFields.add("weight");
 
     // a set of required properties/fields (JSON key names)
     openapiRequiredFields = new HashSet<String>();
-    openapiRequiredFields.add("name");
-    openapiRequiredFields.add("price");
   }
 
  /**
   * Validates the JSON Element and throws an exception if issues found
   *
   * @param jsonElement JSON Element
-  * @throws IOException if the JSON Element is invalid with respect to Product
+  * @throws IOException if the JSON Element is invalid with respect to Inventory
   */
   public static void validateJsonElement(JsonElement jsonElement) throws IOException {
       if (jsonElement == null) {
-        if (!Product.openapiRequiredFields.isEmpty()) { // has required fields but JSON element is null
-          throw new IllegalArgumentException(String.format("The required field(s) %s in Product is not found in the empty JSON string", Product.openapiRequiredFields.toString()));
+        if (!Inventory.openapiRequiredFields.isEmpty()) { // has required fields but JSON element is null
+          throw new IllegalArgumentException(String.format("The required field(s) %s in Inventory is not found in the empty JSON string", Inventory.openapiRequiredFields.toString()));
         }
       }
 
       Set<Map.Entry<String, JsonElement>> entries = jsonElement.getAsJsonObject().entrySet();
       // check to see if the JSON string contains additional fields
       for (Map.Entry<String, JsonElement> entry : entries) {
-        if (!Product.openapiFields.contains(entry.getKey())) {
-          throw new IllegalArgumentException(String.format("The field `%s` in the JSON string is not defined in the `Product` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
-        }
-      }
-
-      // check to make sure all required properties/fields are present in the JSON string
-      for (String requiredField : Product.openapiRequiredFields) {
-        if (jsonElement.getAsJsonObject().get(requiredField) == null) {
-          throw new IllegalArgumentException(String.format("The required field `%s` is not found in the JSON string: %s", requiredField, jsonElement.toString()));
+        if (!Inventory.openapiFields.contains(entry.getKey())) {
+          throw new IllegalArgumentException(String.format("The field `%s` in the JSON string is not defined in the `Inventory` properties. JSON: %s", entry.getKey(), jsonElement.toString()));
         }
       }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
-      if (!jsonObj.get("name").isJsonPrimitive()) {
+      if ((jsonObj.get("name") != null && !jsonObj.get("name").isJsonNull()) && !jsonObj.get("name").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format("Expected the field `name` to be a primitive type in the JSON string but got `%s`", jsonObj.get("name").toString()));
       }
   }
@@ -245,22 +184,22 @@ public class Product {
     @SuppressWarnings("unchecked")
     @Override
     public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
-       if (!Product.class.isAssignableFrom(type.getRawType())) {
-         return null; // this class only serializes 'Product' and its subtypes
+       if (!Inventory.class.isAssignableFrom(type.getRawType())) {
+         return null; // this class only serializes 'Inventory' and its subtypes
        }
        final TypeAdapter<JsonElement> elementAdapter = gson.getAdapter(JsonElement.class);
-       final TypeAdapter<Product> thisAdapter
-                        = gson.getDelegateAdapter(this, TypeToken.get(Product.class));
+       final TypeAdapter<Inventory> thisAdapter
+                        = gson.getDelegateAdapter(this, TypeToken.get(Inventory.class));
 
-       return (TypeAdapter<T>) new TypeAdapter<Product>() {
+       return (TypeAdapter<T>) new TypeAdapter<Inventory>() {
            @Override
-           public void write(JsonWriter out, Product value) throws IOException {
+           public void write(JsonWriter out, Inventory value) throws IOException {
              JsonObject obj = thisAdapter.toJsonTree(value).getAsJsonObject();
              elementAdapter.write(out, obj);
            }
 
            @Override
-           public Product read(JsonReader in) throws IOException {
+           public Inventory read(JsonReader in) throws IOException {
              JsonElement jsonElement = elementAdapter.read(in);
              validateJsonElement(jsonElement);
              return thisAdapter.fromJsonTree(jsonElement);
@@ -271,18 +210,18 @@ public class Product {
   }
 
  /**
-  * Create an instance of Product given an JSON string
+  * Create an instance of Inventory given an JSON string
   *
   * @param jsonString JSON string
-  * @return An instance of Product
-  * @throws IOException if the JSON string is invalid with respect to Product
+  * @return An instance of Inventory
+  * @throws IOException if the JSON string is invalid with respect to Inventory
   */
-  public static Product fromJson(String jsonString) throws IOException {
-    return JSON.getGson().fromJson(jsonString, Product.class);
+  public static Inventory fromJson(String jsonString) throws IOException {
+    return JSON.getGson().fromJson(jsonString, Inventory.class);
   }
 
  /**
-  * Convert an instance of Product to an JSON string
+  * Convert an instance of Inventory to an JSON string
   *
   * @return JSON string
   */

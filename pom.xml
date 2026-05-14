@@ -125,7 +125,7 @@
 						<phase>validate</phase>
 						<goals><goal>generate</goal></goals>
 						<configuration>
-							<inputSpec>${project.basedir}/openapi/openapi.yaml</inputSpec>
+							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
 							<generatorName>openapi-yaml</generatorName>
 							<output>${project.build.directory}/openapi-validation</output>
 							<addCompileSourceRoot>false</addCompileSourceRoot>
@@ -136,7 +136,7 @@
 						<phase>generate-resources</phase>
 						<goals><goal>generate</goal></goals>
 						<configuration>
-							<inputSpec>${project.basedir}/openapi/openapi.yaml</inputSpec>
+							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
 							<generatorName>postman-collection</generatorName>
 							<output>${project.basedir}/generated/postman</output>
 							<addCompileSourceRoot>false</addCompileSourceRoot>
@@ -147,7 +147,7 @@
 						<phase>generate-resources</phase>
 						<goals><goal>generate</goal></goals>
 						<configuration>
-							<inputSpec>${project.basedir}/openapi/openapi.yaml</inputSpec>
+							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
 							<generatorName>java</generatorName>
 							<output>${project.basedir}/generated/sdk-java</output>
 							<addCompileSourceRoot>false</addCompileSourceRoot>
@@ -174,7 +174,7 @@
 							<arguments>
 								<argument>@stoplight/spectral-cli</argument>
 								<argument>lint</argument>
-								<argument>${project.basedir}/openapi/openapi.yaml</argument>
+								<argument>${project.basedir}/src/main/resources/static/openapi.yaml</argument>
 							</arguments>
 						</configuration>
 					</execution>

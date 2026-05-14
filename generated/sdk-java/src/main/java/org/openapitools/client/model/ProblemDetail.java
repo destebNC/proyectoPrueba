@@ -50,7 +50,7 @@ import org.openapitools.client.JSON;
 /**
  * ProblemDetail
  */
-@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-05-12T12:20:28.149338800+02:00[Europe/Madrid]", comments = "Generator version: 7.4.0")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-05-13T13:45:49.328190200+02:00[Europe/Madrid]", comments = "Generator version: 7.4.0")
 public class ProblemDetail {
   public static final String SERIALIZED_NAME_TYPE = "type";
   @SerializedName(SERIALIZED_NAME_TYPE)

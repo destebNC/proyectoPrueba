@@ -1,8 +1,8 @@
 {
 	"info": {
-		"name": "API de Inventario - Fase 2",
+		"name": "Inventory Management API",
 		"description": {
-		    "content": "Gestión de productos de supermercado siguiendo el estándar Contract-First y RFC 7807.",
+		    "content": "RESTful API for inventory and product management, secured with JWT.",
 		    "type": "text/markdown"
 		},
 		"version": "1.0.0",
@@ -10,14 +10,14 @@
 	},
 	"item": [
 	        {
-	            "name": "Productos",
+	            "name": "Inventories",
 	            "item": [
 	                        {
-    "name": "/agregar",
-                "description": "Registra un nuevo producto en la base de datos de inventario.",
+    "name": "/api/inv",
+                "description": "",
                  "item": [
                             {
-                                "name": "Crear nuevo producto",
+                                "name": "Create inventory",
                                 "request": {
                                     "method": "POST",
                                     "header": [
@@ -26,9 +26,185 @@
                                             "value": "application/json",
                                             "description": "",
                                             "disabled": false
-                                        },
+                                        }
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "{\n \"id\": \"<number>\",\n \"name\": \"<string>\"\n}",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/api/inv",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "api",
+                                            "inv"
+                                        ],
+                                        "variable": [
+                                        ],
+                                        "query": [
+                                        ]
+                                    },
+                                    "description": ""
+                                }
+                            }
+                            ]
+                        },
+	                        {
+    "name": "/api/inv/:id",
+                "description": "",
+                 "item": [
+                            {
+                                "name": "Delete inventory",
+                                "request": {
+                                    "method": "DELETE",
+                                    "header": [
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/api/inv/:id",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "api",
+                                            "inv",
+                                            ":id"
+                                        ],
+                                        "variable": [
+                                            {
+                                                "key": "id",
+                                                "value": "",
+                                                "description": ""
+                                            }
+                                        ],
+                                        "query": [
+                                        ]
+                                    },
+                                    "description": ""
+                                }
+                            }
+                            ]
+                        },
+	                        {
+    "name": "/api/inv/paginated",
+                "description": "",
+                 "item": [
+                            {
+                                "name": "List inventories (Paginated)",
+                                "request": {
+                                    "method": "GET",
+                                    "header": [
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/api/inv/paginated",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "api",
+                                            "inv",
+                                            "paginated"
+                                        ],
+                                        "variable": [
+                                        ],
+                                        "query": [
+                                            {
+                                                "key": "page",
+                                                "value": "56",
+                                                "description": "",
+                                                "disabled": true
+                                            },
+                                            {
+                                                "key": "size",
+                                                "value": "56",
+                                                "description": "",
+                                                "disabled": true
+                                            }
+                                        ]
+                                    },
+                                    "description": ""
+                                }
+                            }
+                            ]
+                        }
+	                    ]
+	        },
+	        {
+	            "name": "Products",
+	            "item": [
+	                        {
+    "name": "/api/productos",
+                "description": "",
+                 "item": [
+                            {
+                                "name": "List all products",
+                                "request": {
+                                    "method": "GET",
+                                    "header": [
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/api/productos",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "api",
+                                            "productos"
+                                        ],
+                                        "variable": [
+                                        ],
+                                        "query": [
+                                        ]
+                                    },
+                                    "description": ""
+                                }
+                            }
+                            ]
+                        },
+	                        {
+    "name": "/api/productos",
+                "description": "",
+                 "item": [
+                            {
+                                "name": "Add standalone product",
+                                "request": {
+                                    "method": "POST",
+                                    "header": [
                                         {
-                                            "key": "Accept",
+                                            "key": "Content-Type",
                                             "value": "application/json",
                                             "description": "",
                                             "disabled": false
@@ -44,103 +220,12 @@
                                         }
                                     },
                                     "url": {
-                                        "raw": "{{baseUrl}}/agregar",
+                                        "raw": "{{baseUrl}}/api/productos",
                                         "host": [
                                             "{{baseUrl}}"
                                         ],
                                         "path": [
-                                            "agregar"
-                                        ],
-                                        "variable": [
-                                        ],
-                                        "query": [
-                                        ]
-                                    },
-                                    "description": "Registra un nuevo producto en la base de datos de inventario."
-                                }
-                            }
-                            ]
-                        },
-	                        {
-    "name": "/delete/:product_id",
-                "description": "Elimina un producto de forma permanente mediante su ID.",
-                 "item": [
-                            {
-                                "name": "Eliminar producto",
-                                "request": {
-                                    "method": "DELETE",
-                                    "header": [
-                                        {
-                                            "key": "Accept",
-                                            "value": "application/json",
-                                            "description": "",
-                                            "disabled": false
-                                        }
-                                    ],
-                                    "body": {
-                                        "mode": "raw",
-                                        "raw": "",
-                                        "options": {
-                                            "raw": {
-                                                "language": "json"
-                                            }
-                                        }
-                                    },
-                                    "url": {
-                                        "raw": "{{baseUrl}}/delete/:product_id",
-                                        "host": [
-                                            "{{baseUrl}}"
-                                        ],
-                                        "path": [
-                                            "delete",
-                                            ":product_id"
-                                        ],
-                                        "variable": [
-                                            {
-                                                "key": "productId",
-                                                "value": "",
-                                                "description": "ID del producto a borrar"
-                                            }
-                                        ],
-                                        "query": [
-                                        ]
-                                    },
-                                    "description": "Elimina un producto de forma permanente mediante su ID."
-                                }
-                            }
-                            ]
-                        },
-	                        {
-    "name": "/productos",
-                "description": "Retorna todos los productos registrados actualmente.",
-                 "item": [
-                            {
-                                "name": "Listar inventario",
-                                "request": {
-                                    "method": "GET",
-                                    "header": [
-                                        {
-                                            "key": "Accept",
-                                            "value": "application/json",
-                                            "description": "",
-                                            "disabled": false
-                                        }
-                                    ],
-                                    "body": {
-                                        "mode": "raw",
-                                        "raw": "",
-                                        "options": {
-                                            "raw": {
-                                                "language": "json"
-                                            }
-                                        }
-                                    },
-                                    "url": {
-                                        "raw": "{{baseUrl}}/productos",
-                                        "host": [
-                                            "{{baseUrl}}"
-                                        ],
-                                        "path": [
+                                            "api",
                                             "productos"
                                         ],
                                         "variable": [
@@ -148,26 +233,20 @@
                                         "query": [
                                         ]
                                     },
-                                    "description": "Retorna todos los productos registrados actualmente."
+                                    "description": ""
                                 }
                             }
                             ]
                         },
 	                        {
-    "name": "/productos/:product_id",
-                "description": "Obtiene los detalles de un producto específico mediante su identificador.",
+    "name": "/api/productos/:product_id",
+                "description": "",
                  "item": [
                             {
-                                "name": "Buscar por ID",
+                                "name": "Get product by ID",
                                 "request": {
                                     "method": "GET",
                                     "header": [
-                                        {
-                                            "key": "Accept",
-                                            "value": "application/json",
-                                            "description": "",
-                                            "disabled": false
-                                        }
                                     ],
                                     "body": {
                                         "mode": "raw",
@@ -179,11 +258,12 @@
                                         }
                                     },
                                     "url": {
-                                        "raw": "{{baseUrl}}/productos/:product_id",
+                                        "raw": "{{baseUrl}}/api/productos/:product_id",
                                         "host": [
                                             "{{baseUrl}}"
                                         ],
                                         "path": [
+                                            "api",
                                             "productos",
                                             ":product_id"
                                         ],
@@ -191,13 +271,374 @@
                                             {
                                                 "key": "productId",
                                                 "value": "",
-                                                "description": "Identificador único del producto"
+                                                "description": ""
                                             }
                                         ],
                                         "query": [
                                         ]
                                     },
-                                    "description": "Obtiene los detalles de un producto específico mediante su identificador."
+                                    "description": ""
+                                }
+                            }
+                            ]
+                        },
+	                        {
+    "name": "/api/productos/inv/:inventory_id",
+                "description": "",
+                 "item": [
+                            {
+                                "name": "Add product to specific inventory",
+                                "request": {
+                                    "method": "POST",
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "{\n \"id\": \"<number>\",\n \"name\": \"<string>\",\n \"price\": \"<number>\",\n \"weight\": \"<number>\"\n}",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/api/productos/inv/:inventory_id",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "api",
+                                            "productos",
+                                            "inv",
+                                            ":inventory_id"
+                                        ],
+                                        "variable": [
+                                            {
+                                                "key": "inventoryId",
+                                                "value": "",
+                                                "description": ""
+                                            }
+                                        ],
+                                        "query": [
+                                        ]
+                                    },
+                                    "description": ""
+                                }
+                            }
+                            ]
+                        },
+	                        {
+    "name": "/api/productos/inv/:inventory_id/:product_id",
+                "description": "",
+                 "item": [
+                            {
+                                "name": "Delete product from inventory",
+                                "request": {
+                                    "method": "DELETE",
+                                    "header": [
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/api/productos/inv/:inventory_id/:product_id",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "api",
+                                            "productos",
+                                            "inv",
+                                            ":inventory_id",
+                                            ":product_id"
+                                        ],
+                                        "variable": [
+                                            {
+                                                "key": "inventoryId",
+                                                "value": "",
+                                                "description": ""
+                                            },
+                                            {
+                                                "key": "productId",
+                                                "value": "",
+                                                "description": ""
+                                            }
+                                        ],
+                                        "query": [
+                                        ]
+                                    },
+                                    "description": ""
+                                }
+                            }
+                            ]
+                        },
+	                        {
+    "name": "/api/productos/inv/:inventory_id/:product_id",
+                "description": "",
+                 "item": [
+                            {
+                                "name": "Update product in inventory",
+                                "request": {
+                                    "method": "PUT",
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "{\n \"id\": \"<number>\",\n \"name\": \"<string>\",\n \"price\": \"<number>\",\n \"weight\": \"<number>\"\n}",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/api/productos/inv/:inventory_id/:product_id",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "api",
+                                            "productos",
+                                            "inv",
+                                            ":inventory_id",
+                                            ":product_id"
+                                        ],
+                                        "variable": [
+                                            {
+                                                "key": "inventoryId",
+                                                "value": "",
+                                                "description": ""
+                                            },
+                                            {
+                                                "key": "productId",
+                                                "value": "",
+                                                "description": ""
+                                            }
+                                        ],
+                                        "query": [
+                                        ]
+                                    },
+                                    "description": ""
+                                }
+                            }
+                            ]
+                        },
+	                        {
+    "name": "/api/productos/inv/:inventory_id/paginated",
+                "description": "",
+                 "item": [
+                            {
+                                "name": "List products from inventory (Paginated)",
+                                "request": {
+                                    "method": "GET",
+                                    "header": [
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/api/productos/inv/:inventory_id/paginated",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "api",
+                                            "productos",
+                                            "inv",
+                                            ":inventory_id",
+                                            "paginated"
+                                        ],
+                                        "variable": [
+                                            {
+                                                "key": "inventoryId",
+                                                "value": "",
+                                                "description": ""
+                                            }
+                                        ],
+                                        "query": [
+                                            {
+                                                "key": "page",
+                                                "value": "56",
+                                                "description": "",
+                                                "disabled": true
+                                            },
+                                            {
+                                                "key": "size",
+                                                "value": "56",
+                                                "description": "",
+                                                "disabled": true
+                                            }
+                                        ]
+                                    },
+                                    "description": ""
+                                }
+                            }
+                            ]
+                        },
+	                        {
+    "name": "/api/productos/paginated",
+                "description": "",
+                 "item": [
+                            {
+                                "name": "List all products (Paginated)",
+                                "request": {
+                                    "method": "GET",
+                                    "header": [
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/api/productos/paginated",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "api",
+                                            "productos",
+                                            "paginated"
+                                        ],
+                                        "variable": [
+                                        ],
+                                        "query": [
+                                            {
+                                                "key": "page",
+                                                "value": "56",
+                                                "description": "",
+                                                "disabled": true
+                                            },
+                                            {
+                                                "key": "size",
+                                                "value": "56",
+                                                "description": "",
+                                                "disabled": true
+                                            }
+                                        ]
+                                    },
+                                    "description": ""
+                                }
+                            }
+                            ]
+                        }
+	                    ]
+	        },
+	        {
+	            "name": "Authentication",
+	            "item": [
+	                        {
+    "name": "/auth/login",
+                "description": "",
+                 "item": [
+                            {
+                                "name": "User login",
+                                "request": {
+                                    "method": "POST",
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "{\n \"username\": \"<string>\",\n \"password\": \"<string>\"\n}",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/auth/login",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "auth",
+                                            "login"
+                                        ],
+                                        "variable": [
+                                        ],
+                                        "query": [
+                                        ]
+                                    },
+                                    "description": ""
+                                }
+                            }
+                            ]
+                        },
+	                        {
+    "name": "/auth/register",
+                "description": "",
+                 "item": [
+                            {
+                                "name": "User registration",
+                                "request": {
+                                    "method": "POST",
+                                    "header": [
+                                        {
+                                            "key": "Content-Type",
+                                            "value": "application/json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
+                                    ],
+                                    "body": {
+                                        "mode": "raw",
+                                        "raw": "{\n \"username\": \"<string>\",\n \"password\": \"<string>\",\n \"role\": \"<string>\"\n}",
+                                        "options": {
+                                            "raw": {
+                                                "language": "json"
+                                            }
+                                        }
+                                    },
+                                    "url": {
+                                        "raw": "{{baseUrl}}/auth/register",
+                                        "host": [
+                                            "{{baseUrl}}"
+                                        ],
+                                        "path": [
+                                            "auth",
+                                            "register"
+                                        ],
+                                        "variable": [
+                                        ],
+                                        "query": [
+                                        ]
+                                    },
+                                    "description": ""
                                 }
                             }
                             ]
