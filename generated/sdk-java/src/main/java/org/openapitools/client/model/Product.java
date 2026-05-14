@@ -49,7 +49,7 @@ import org.openapitools.client.JSON;
 /**
  * Product
  */
-@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-05-14T12:28:49.142053700+02:00[Europe/Madrid]", comments = "Generator version: 7.4.0")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-05-14T13:22:36.664719200+02:00[Europe/Madrid]", comments = "Generator version: 7.4.0")
 public class Product {
   public static final String SERIALIZED_NAME_ID = "id";
   @SerializedName(SERIALIZED_NAME_ID)

@@ -23,21 +23,12 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Permitir acceso libre al Login y Registro
                         .requestMatchers("/auth/**").permitAll()
-
-                        // 2. ¡AQUÍ ESTÁ EL CAMBIO! Añadimos "/openapi.yaml" a la lista blanca
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/openapi.yaml").permitAll()
-
-                        // 3. Rutas de Inventario: Solo para ADMIN
+                        .requestMatchers("/v3/api-docs/**", "/v3/api-docs.yaml", "/swagger-ui/**", "/openapi.yaml").permitAll()
                         .requestMatchers("/api/inv/**").hasRole("ADMIN")
-                        // 4. Rutas de Productos: Para USER y ADMIN
                         .requestMatchers("/api/productos/**").hasAnyRole("ADMIN", "USER")
-                        // 5. Cualquier otra cosa requiere estar logueado
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
