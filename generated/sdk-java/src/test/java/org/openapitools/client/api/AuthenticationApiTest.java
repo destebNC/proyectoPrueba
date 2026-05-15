@@ -15,6 +15,7 @@ package org.openapitools.client.api;
 
 import org.openapitools.client.ApiException;
 import org.openapitools.client.model.LoginRequest;
+import org.openapitools.client.model.ProblemDetail;
 import org.openapitools.client.model.RegisterRequest;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

@@ -68,12 +68,14 @@ This endpoint does not need any parameter.
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
+ - **Accept**: application/json, application/problem+json
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
+| **400** | Invalid request |  -  |
+| **401** | Unauthorized |  -  |
 
 <a id="apiProductosInvInventoryIdPaginatedGet"></a>
 # **apiProductosInvInventoryIdPaginatedGet**
@@ -136,12 +138,15 @@ null (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/problem+json
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
+| **400** | Invalid request |  -  |
+| **401** | Unauthorized |  -  |
+| **404** | Resource not found |  -  |
 
 <a id="apiProductosInvInventoryIdPost"></a>
 # **apiProductosInvInventoryIdPost**
@@ -202,12 +207,15 @@ null (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/problem+json
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
+| **400** | Invalid request |  -  |
+| **401** | Unauthorized |  -  |
+| **404** | Resource not found |  -  |
 
 <a id="apiProductosInvInventoryIdProductIdDelete"></a>
 # **apiProductosInvInventoryIdProductIdDelete**
@@ -268,12 +276,14 @@ null (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/problem+json
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
+| **401** | Unauthorized |  -  |
+| **404** | Resource not found |  -  |
 
 <a id="apiProductosInvInventoryIdProductIdPut"></a>
 # **apiProductosInvInventoryIdProductIdPut**
@@ -336,12 +346,15 @@ null (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/problem+json
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
+| **400** | Invalid request |  -  |
+| **401** | Unauthorized |  -  |
+| **404** | Resource not found |  -  |
 
 <a id="apiProductosPaginatedGet"></a>
 # **apiProductosPaginatedGet**
@@ -402,12 +415,14 @@ null (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/problem+json
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
+| **400** | Invalid request |  -  |
+| **401** | Unauthorized |  -  |
 
 <a id="apiProductosPost"></a>
 # **apiProductosPost**
@@ -466,12 +481,14 @@ null (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/problem+json
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
+| **400** | Invalid request |  -  |
+| **401** | Unauthorized |  -  |
 
 <a id="apiProductosProductIdGet"></a>
 # **apiProductosProductIdGet**
@@ -530,10 +547,12 @@ null (empty response body)
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: Not defined
+ - **Accept**: application/problem+json
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
+| **400** | Invalid request |  -  |
+| **404** | Resource not found |  -  |
 

@@ -1,73 +1,39 @@
 package com.example.proyectoPrueba.controller;
 
-import com.example.proyectoPrueba.JwtUtil;
 import com.example.proyectoPrueba.dto.LoginRequestDto;
 import com.example.proyectoPrueba.dto.RegisterRequestDto;
 import com.example.proyectoPrueba.dto.TokenResponse;
-import com.example.proyectoPrueba.model.User;
-import com.example.proyectoPrueba.repository.UserRepository;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.example.proyectoPrueba.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "Authentication")
 public class AuthController {
 
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final AuthService authService;
 
-    // Constructor para inyectar el repository
-    public AuthController(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder=passwordEncoder;
+    // Solo inyectamos el AuthService
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("/login")
-    public TokenResponse login(@RequestBody LoginRequestDto request) {
-        System.out.println(passwordEncoder.encode("1234"));
-
-        // Buscar usuario por username
-        User user = userRepository.findByUsername(request.username())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        if (!passwordEncoder.matches(
-                request.password(),
-                user.getPassword()
-        )) {
-            throw new RuntimeException("Contraseña incorrecta");
-        }
-
-        // Generar JWT con user y rol
-        String jwt = JwtUtil.generateToken(
-                user.getUsername(),
-                user.getRole()
-        );
-
-        // Devolver token
-        return new TokenResponse(jwt);
+    @Operation(operationId = "authLoginPost", summary = "User login")
+    public ResponseEntity<TokenResponse> login(@RequestBody LoginRequestDto request) {
+        String jwt = authService.login(request);
+        return ResponseEntity.ok(new TokenResponse(jwt));
     }
 
     @PostMapping("/register")
-    public TokenResponse register(@RequestBody RegisterRequestDto request) {
-
-        if (userRepository.findByUsername(request.username()).isPresent()) {
-            throw new RuntimeException("El usuario ya existe");
-        }
-
-        User user = new User();
-        user.setUsername(request.username());
-
-        user.setPassword(passwordEncoder.encode(request.password()));
-
-        user.setRole(request.role());;
-
-        userRepository.save(user);
-
-        String jwt = JwtUtil.generateToken(
-                user.getUsername(),
-                user.getRole()
-        );
-
-        return new TokenResponse(jwt);
+    @Operation(operationId = "authRegisterPost", summary = "User registration")
+    public ResponseEntity<TokenResponse> register(@RequestBody RegisterRequestDto request) {
+        authService.register(request);
+        // Hacemos auto-login después de registrar para devolver el token
+        String jwt = authService.login(new LoginRequestDto(request.username(), request.password()));
+        return ResponseEntity.ok(new TokenResponse(jwt));
     }
 }

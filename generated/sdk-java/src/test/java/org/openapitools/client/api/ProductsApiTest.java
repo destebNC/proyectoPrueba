@@ -14,7 +14,9 @@
 package org.openapitools.client.api;
 
 import org.openapitools.client.ApiException;
+import org.openapitools.client.model.ProblemDetail;
 import org.openapitools.client.model.Product;
+import org.openapitools.client.model.ProductDto;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +40,7 @@ public class ProductsApiTest {
      */
     @Test
     public void apiProductosGetTest() throws ApiException {
-        api.apiProductosGet();
+        List<ProductDto> response = api.apiProductosGet();
         // TODO: test validations
     }
 

@@ -9,6 +9,7 @@ docs/AuthenticationApi.md
 docs/InventoriesApi.md
 docs/Inventory.md
 docs/LoginRequest.md
+docs/ProblemDetail.md
 docs/Product.md
 docs/ProductDto.md
 docs/ProductsApi.md
@@ -45,6 +46,7 @@ src/main/java/org/openapitools/client/auth/HttpBearerAuth.java
 src/main/java/org/openapitools/client/model/AbstractOpenApiSchema.java
 src/main/java/org/openapitools/client/model/Inventory.java
 src/main/java/org/openapitools/client/model/LoginRequest.java
+src/main/java/org/openapitools/client/model/ProblemDetail.java
 src/main/java/org/openapitools/client/model/Product.java
 src/main/java/org/openapitools/client/model/ProductDto.java
 src/main/java/org/openapitools/client/model/RegisterRequest.java
