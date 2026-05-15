@@ -26,6 +26,12 @@
                                             "value": "application/json",
                                             "description": "",
                                             "disabled": false
+                                        },
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/problem+json",
+                                            "description": "",
+                                            "disabled": false
                                         }
                                     ],
                                     "body": {
@@ -65,6 +71,12 @@
                                 "request": {
                                     "method": "DELETE",
                                     "header": [
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/problem+json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
                                     ],
                                     "body": {
                                         "mode": "raw",
@@ -109,6 +121,12 @@
                                 "request": {
                                     "method": "GET",
                                     "header": [
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/problem+json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
                                     ],
                                     "body": {
                                         "mode": "raw",
@@ -214,6 +232,12 @@
                                             "value": "application/json",
                                             "description": "",
                                             "disabled": false
+                                        },
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/problem+json",
+                                            "description": "",
+                                            "disabled": false
                                         }
                                     ],
                                     "body": {
@@ -253,6 +277,12 @@
                                 "request": {
                                     "method": "GET",
                                     "header": [
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/problem+json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
                                     ],
                                     "body": {
                                         "mode": "raw",
@@ -302,6 +332,12 @@
                                             "value": "application/json",
                                             "description": "",
                                             "disabled": false
+                                        },
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/problem+json",
+                                            "description": "",
+                                            "disabled": false
                                         }
                                     ],
                                     "body": {
@@ -348,6 +384,12 @@
                                 "request": {
                                     "method": "DELETE",
                                     "header": [
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/problem+json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
                                     ],
                                     "body": {
                                         "mode": "raw",
@@ -404,6 +446,12 @@
                                             "value": "application/json",
                                             "description": "",
                                             "disabled": false
+                                        },
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/problem+json",
+                                            "description": "",
+                                            "disabled": false
                                         }
                                     ],
                                     "body": {
@@ -456,6 +504,12 @@
                                 "request": {
                                     "method": "GET",
                                     "header": [
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/problem+json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
                                     ],
                                     "body": {
                                         "mode": "raw",
@@ -514,6 +568,12 @@
                                 "request": {
                                     "method": "GET",
                                     "header": [
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/problem+json",
+                                            "description": "",
+                                            "disabled": false
+                                        }
                                     ],
                                     "body": {
                                         "mode": "raw",
@@ -575,6 +635,12 @@
                                             "value": "application/json",
                                             "description": "",
                                             "disabled": false
+                                        },
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/problem+json",
+                                            "description": "",
+                                            "disabled": false
                                         }
                                     ],
                                     "body": {
@@ -617,6 +683,12 @@
                                         {
                                             "key": "Content-Type",
                                             "value": "application/json",
+                                            "description": "",
+                                            "disabled": false
+                                        },
+                                        {
+                                            "key": "Accept",
+                                            "value": "application/problem+json",
                                             "description": "",
                                             "disabled": false
                                         }

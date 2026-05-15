@@ -28,6 +28,7 @@ import java.io.IOException;
 
 
 import org.openapitools.client.model.LoginRequest;
+import org.openapitools.client.model.ProblemDetail;
 import org.openapitools.client.model.RegisterRequest;
 
 import java.lang.reflect.Type;
@@ -83,6 +84,8 @@ public class AuthenticationApi {
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> Invalid request </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Unauthorized </td><td>  -  </td></tr>
      </table>
      */
     public okhttp3.Call authLoginPostCall(LoginRequest loginRequest, final ApiCallback _callback) throws ApiException {
@@ -111,6 +114,7 @@ public class AuthenticationApi {
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
+            "application/problem+json"
         };
         final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
         if (localVarAccept != null) {
@@ -149,6 +153,8 @@ public class AuthenticationApi {
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> Invalid request </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Unauthorized </td><td>  -  </td></tr>
      </table>
      */
     public void authLoginPost(LoginRequest loginRequest) throws ApiException {
@@ -165,6 +171,8 @@ public class AuthenticationApi {
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> Invalid request </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Unauthorized </td><td>  -  </td></tr>
      </table>
      */
     public ApiResponse<Void> authLoginPostWithHttpInfo(LoginRequest loginRequest) throws ApiException {
@@ -183,6 +191,8 @@ public class AuthenticationApi {
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> Invalid request </td><td>  -  </td></tr>
+        <tr><td> 401 </td><td> Unauthorized </td><td>  -  </td></tr>
      </table>
      */
     public okhttp3.Call authLoginPostAsync(LoginRequest loginRequest, final ApiCallback<Void> _callback) throws ApiException {
@@ -201,6 +211,8 @@ public class AuthenticationApi {
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> Invalid request </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Conflict </td><td>  -  </td></tr>
      </table>
      */
     public okhttp3.Call authRegisterPostCall(RegisterRequest registerRequest, final ApiCallback _callback) throws ApiException {
@@ -229,6 +241,7 @@ public class AuthenticationApi {
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
+            "application/problem+json"
         };
         final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
         if (localVarAccept != null) {
@@ -267,6 +280,8 @@ public class AuthenticationApi {
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> Invalid request </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Conflict </td><td>  -  </td></tr>
      </table>
      */
     public void authRegisterPost(RegisterRequest registerRequest) throws ApiException {
@@ -283,6 +298,8 @@ public class AuthenticationApi {
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> Invalid request </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Conflict </td><td>  -  </td></tr>
      </table>
      */
     public ApiResponse<Void> authRegisterPostWithHttpInfo(RegisterRequest registerRequest) throws ApiException {
@@ -301,6 +318,8 @@ public class AuthenticationApi {
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
         <tr><td> 200 </td><td> OK </td><td>  -  </td></tr>
+        <tr><td> 400 </td><td> Invalid request </td><td>  -  </td></tr>
+        <tr><td> 409 </td><td> Conflict </td><td>  -  </td></tr>
      </table>
      */
     public okhttp3.Call authRegisterPostAsync(RegisterRequest registerRequest, final ApiCallback<Void> _callback) throws ApiException {

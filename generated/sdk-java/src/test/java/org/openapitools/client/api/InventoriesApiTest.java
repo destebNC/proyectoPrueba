@@ -15,6 +15,7 @@ package org.openapitools.client.api;
 
 import org.openapitools.client.ApiException;
 import org.openapitools.client.model.Inventory;
+import org.openapitools.client.model.ProblemDetail;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 

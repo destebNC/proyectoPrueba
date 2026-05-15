@@ -49,7 +49,7 @@ import org.openapitools.client.JSON;
 /**
  * Inventory
  */
-@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-05-14T13:22:36.664719200+02:00[Europe/Madrid]", comments = "Generator version: 7.4.0")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-05-15T11:37:23.131843+02:00[Europe/Madrid]", comments = "Generator version: 7.4.0")
 public class Inventory {
   public static final String SERIALIZED_NAME_ID = "id";
   @SerializedName(SERIALIZED_NAME_ID)

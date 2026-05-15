@@ -112,6 +112,50 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<version>7.4.0</version>
+				<executions>
+					<execution>
+						<id>validate-openapi</id>
+						<phase>validate</phase>
+						<goals><goal>generate</goal></goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
+							<generatorName>openapi-yaml</generatorName>
+							<output>${project.build.directory}/openapi-validation</output>
+							<addCompileSourceRoot>false</addCompileSourceRoot>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-postman</id>
+						<phase>generate-resources</phase>
+						<goals><goal>generate</goal></goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
+							<generatorName>postman-collection</generatorName>
+							<output>${project.basedir}/generated/postman</output>
+							<addCompileSourceRoot>false</addCompileSourceRoot>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-sdk</id>
+						<phase>generate-resources</phase>
+						<goals><goal>generate</goal></goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
+							<generatorName>java</generatorName>
+							<output>${project.basedir}/generated/sdk-java</output>
+							<addCompileSourceRoot>false</addCompileSourceRoot>
+							<configOptions>
+								<useJakartaEe>true</useJakartaEe>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<groupId>org.springdoc</groupId>
 				<artifactId>springdoc-openapi-maven-plugin</artifactId>
 				<version>1.4</version>
@@ -135,6 +179,19 @@
 				<version>3.1.0</version>
 				<executions>
 					<execution>
+						<id>lint-openapi</id>
+						<phase>verify</phase>
+						<goals><goal>exec</goal></goals>
+						<configuration>
+							<executable>npx</executable>
+							<arguments>
+								<argument>@stoplight/spectral-cli</argument>
+								<argument>lint</argument>
+								<argument>${project.basedir}/src/main/resources/static/openapi.yaml</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
 						<id>compare-contract-vs-runtime</id>
 						<phase>verify</phase>
 						<goals><goal>exec</goal></goals>
@@ -142,6 +199,19 @@
 							<executable>${project.basedir}/oasdiff.exe</executable>
 							<arguments>
 								<argument>diff</argument>
+								<argument>${project.basedir}/src/main/resources/static/openapi.yaml</argument>
+								<argument>${project.build.directory}/openapi/generated-openapi.yaml</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>breaking-changes-check</id>
+						<phase>verify</phase>
+						<goals><goal>exec</goal></goals>
+						<configuration>
+							<executable>${project.basedir}/oasdiff.exe</executable>
+							<arguments>
+								<argument>breaking</argument>
 								<argument>${project.basedir}/src/main/resources/static/openapi.yaml</argument>
 								<argument>${project.build.directory}/openapi/generated-openapi.yaml</argument>
 							</arguments>

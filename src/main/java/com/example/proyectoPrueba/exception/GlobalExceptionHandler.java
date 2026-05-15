@@ -13,33 +13,26 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Este método atrapa cualquier error (Exception) que ocurra en el servidor
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ProblemDetail> handleAllErrors(Exception ex, HttpServletRequest request) {
-
-        // Creamos el objeto ProblemDetail (Estándar de Spring 6+)
+    // 1. Manejo de Excepciones de Lógica de Negocio (Usuario no encontrado, Contraseña mala, etc.)
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ProblemDetail> handleBusinessErrors(RuntimeException ex, HttpServletRequest request) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "Se ha producido un error interno. Por favor, contacte con soporte."
+                HttpStatus.BAD_REQUEST, // Código 400
+                ex.getMessage() // Aquí sale el mensaje exacto: "Contraseña incorrecta" o "Inventario no encontrado"
         );
+        problem.setTitle("Error de lógica de negocio");
+        problem.setType(URI.create("https://ejemplo.com/errores/bad-request"));
+        problem.setInstance(URI.create(request.getRequestURI()));
 
-        // Personalizamos los campos según nuestro openapi.yaml
-        problem.setTitle("Error interno del servidor");
-        problem.setType(URI.create("https://ejemplo.com/errores/error-interno"));
-        problem.setInstance(URI.create(request.getRequestURI())); // Muestra en qué URL falló
-
-        // Opcional: añadimos el mensaje real del error para depurar
-        problem.setProperty("debug_message", ex.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(problem);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
 
+    // 2. Manejo de Errores de Validación (Como un @Email mal puesto, o un @NotNull vacío)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ProblemDetail> handleValidationErrors(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ProblemDetail> handleValidationErrors(MethodArgumentNotValidException ex, HttpServletRequest request) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Datos de entrada inválidos");
         problem.setTitle("Error de validación");
+        problem.setInstance(URI.create(request.getRequestURI()));
 
         // Recogemos todos los errores de los campos y los juntamos
         List<String> errors = ex.getBindingResult().getFieldErrors()
@@ -48,5 +41,26 @@ public class GlobalExceptionHandler {
 
         problem.setProperty("errores", errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    }
+
+    // 3. Manejo de TODOS los demás errores imprevistos (500)
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ProblemDetail> handleAllErrors(Exception ex, HttpServletRequest request) {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Se ha producido un error interno. Por favor, contacte con soporte."
+        );
+
+        problem.setTitle("Error interno del servidor");
+        problem.setType(URI.create("https://ejemplo.com/errores/error-interno"));
+        problem.setInstance(URI.create(request.getRequestURI()));
+
+        // Añadimos el mensaje real del error para depurar
+        problem.setProperty("debug_message", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(problem);
     }
 }

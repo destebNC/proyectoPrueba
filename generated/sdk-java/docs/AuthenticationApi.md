@@ -60,12 +60,14 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/problem+json
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
+| **400** | Invalid request |  -  |
+| **401** | Unauthorized |  -  |
 
 <a id="authRegisterPost"></a>
 # **authRegisterPost**
@@ -119,10 +121,12 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: application/json
- - **Accept**: Not defined
+ - **Accept**: application/problem+json
 
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 | **200** | OK |  -  |
+| **400** | Invalid request |  -  |
+| **409** | Conflict |  -  |
 
