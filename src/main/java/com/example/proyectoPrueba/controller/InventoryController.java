@@ -41,4 +41,11 @@ public class InventoryController {
         inventoryService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping
+    @Operation(summary = "List all inventories (For C# SDK)")
+    public ResponseEntity<java.util.List<InventoryDto>> getAll() {
+        // Llama al método getAll() programado en InventoryService
+        return ResponseEntity.ok(inventoryService.getAll());
+    }
 }

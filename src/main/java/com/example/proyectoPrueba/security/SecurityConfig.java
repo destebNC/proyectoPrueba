@@ -25,10 +25,22 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // 1. Rutas públicas (Login, Registro y SWAGGER al completo)
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/v3/api-docs/**", "/v3/api-docs.yaml", "/swagger-ui/**", "/openapi.yaml").permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**",
+                                "/openapi.yaml"
+                        ).permitAll()
+
+                        // 2. Rutas protegidas por Roles
                         .requestMatchers("/api/inv/**").hasRole("ADMIN")
                         .requestMatchers("/api/productos/**").hasAnyRole("ADMIN", "USER")
+
+                        // 3. Cualquier otra ruta requiere Token
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
