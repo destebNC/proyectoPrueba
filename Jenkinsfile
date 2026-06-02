@@ -16,7 +16,7 @@ pipeline {
         stage('Build & Verify') {
             steps {
                 // Ejecuta la validación, los tests y genera los SDKs
-                h 'chmod +x ./mvnw
+                sh 'chmod +x ./mvnw'
                 sh './mvnw clean verify'
             }
         }
