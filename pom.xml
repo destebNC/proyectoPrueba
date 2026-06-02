@@ -61,6 +61,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope> <!-- Cambiado a runtime para que esté disponible al iniciar la app -->
+		</dependency>
+
+		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.5.0</version>
@@ -99,10 +105,18 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>com.example.proyectoPrueba.ProyectoPruebaApplication</mainClass>
+				</configuration>
 				<executions>
 					<execution>
 						<id>pre-integration-test</id>
 						<goals><goal>start</goal></goals>
+						<configuration>
+							<profiles>
+								<profile>ci</profile> <!-- Activa el perfil 'ci' al iniciar la aplicación -->
+							</profiles>
+						</configuration>
 					</execution>
 					<execution>
 						<id>post-integration-test</id>
