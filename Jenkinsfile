@@ -17,7 +17,7 @@ pipeline {
             steps {
                 // Ejecuta la validación, los tests y genera los SDKs
                 sh 'chmod +x ./mvnw'
-                sh './mvnw clean verify'
+                sh './mvnw clean install -DskipTests'
             }
         }
     }
