@@ -49,7 +49,7 @@ import org.openapitools.client.JSON;
 /**
  * ProductDto
  */
-@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-05-15T11:37:23.131843+02:00[Europe/Madrid]", comments = "Generator version: 7.4.0")
+@jakarta.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", date = "2026-05-21T13:23:11.115128800+02:00[Europe/Madrid]", comments = "Generator version: 7.4.0")
 public class ProductDto {
   public static final String SERIALIZED_NAME_NAME = "name";
   @SerializedName(SERIALIZED_NAME_NAME)

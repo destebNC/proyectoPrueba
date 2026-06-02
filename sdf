@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=C:\Users\danie\IdeaProjects\proyectoPrueba\generated\sdk-java\target\openapi-java-client-1.0.0.jar -DgroupId=com.miempresa -DartifactId=openapi-java-client -Dversion=1.0.0 -Dpackaging=jar
