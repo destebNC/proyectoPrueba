@@ -28,7 +28,8 @@ public class SecurityConfig {
                         // 1. Rutas públicas (Login, Registro y SWAGGER al completo)
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers(
-                                "/v3/api-docs/**",
+                                "/v3/api-docs",        // ¡CLAVE! Ruta exacta que usa Maven
+                                "/v3/api-docs/**",     // Rutas hijas
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/swagger-resources/**",
