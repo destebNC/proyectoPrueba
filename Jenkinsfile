@@ -15,9 +15,11 @@ pipeline {
 
         stage('Build & Verify') {
             steps {
-                // Ejecuta la validación y salta los tests y las ejecuciones problemáticas
+                // 1. Damos permisos de ejecución a Maven
                 sh 'chmod +x ./mvnw'
-                sh './mvnw clean install -DskipTests -Dexec.skip=true'
+
+                // 2. Ejecutamos la validación COMPLETA (sin saltarnos los tests ni las validaciones)
+                sh './mvnw clean verify'
             }
         }
     }
@@ -28,10 +30,10 @@ pipeline {
             archiveArtifacts artifacts: 'generated/**/*', fingerprint: true
         }
         success {
-            echo 'Pipeline completado con ÉXITO'
+            echo '✅ Pipeline completado con ÉXITO'
         }
         failure {
-            echo 'Pipeline FALLIDO: Revisa los logs'
+            echo '❌ Pipeline FALLIDO: Revisa los logs'
         }
     }
 }
