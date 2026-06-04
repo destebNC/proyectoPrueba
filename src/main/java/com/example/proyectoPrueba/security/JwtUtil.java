@@ -1,4 +1,4 @@
-package com.example.proyectoPrueba.security;
+package com.example.proyectoPrueba;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
