@@ -203,6 +203,8 @@
 							</arguments>
 						</configuration>
 					</execution>
+					<!-- Comentado temporalmente porque oasdiff.exe no es compatible con Linux en Jenkins -->
+					<!--
 					<execution>
 						<id>compare-contract-vs-runtime</id>
 						<phase>verify</phase>
@@ -216,6 +218,9 @@
 							</arguments>
 						</configuration>
 					</execution>
+					-->
+					<!-- Comentado temporalmente porque oasdiff.exe no es compatible con Linux en Jenkins -->
+					<!--
 					<execution>
 						<id>breaking-changes-check</id>
 						<phase>verify</phase>
@@ -229,6 +234,7 @@
 							</arguments>
 						</configuration>
 					</execution>
+					-->
 				</executions>
 			</plugin>
 		</plugins>

@@ -30,6 +30,11 @@ pipeline {
                 sh './mvnw clean verify -Dspring.profiles.active=ci'
             }
         }
+        stage('Build Java SDK') {
+                    steps {
+                        sh 'cd generated/sdk-java && chmod +x ./gradlew && ./gradlew clean build'
+                    }
+                }
     }
 
     post {
