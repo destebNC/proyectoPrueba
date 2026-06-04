@@ -18,7 +18,15 @@ pipeline {
                 // 1. Damos permisos de ejecución a Maven
                 sh 'chmod +x ./mvnw'
 
-                // 2. Ejecutamos la validación COMPLETA indicando el perfil "ci" para los tests
+                // 2. Descargamos oasdiff para Linux, lo extraemos y reemplazamos el .exe
+                sh '''
+                    curl -L -o oasdiff_linux.tar.gz https://github.com/Tufin/oasdiff/releases/download/v1.9.6/oasdiff_1.9.6_linux_amd64.tar.gz
+                    tar -xzf oasdiff_linux.tar.gz
+                    mv oasdiff oasdiff.exe
+                    chmod +x oasdiff.exe
+                '''
+
+                // 3. Ejecutamos la validación COMPLETA real (usando el perfil de base de datos 'ci')
                 sh './mvnw clean verify -Dspring.profiles.active=ci'
             }
         }
