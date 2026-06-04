@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,23 +20,30 @@ public class SecurityConfig {
         this.jwtFilter = jwtFilter;
     }
 
+    // Ignoramos completamente la seguridad para las rutas de documentación
+    // Esto permite a Maven descargar el OpenAPI generado sin recibir un error 403
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(
+                "/v3/api-docs",
+                "/v3/api-docs/**",
+                "/v3/api-docs.yaml",
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/swagger-resources/**",
+                "/webjars/**",
+                "/openapi.yaml"
+        );
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // 1. Rutas públicas (Login, Registro y SWAGGER al completo)
+                        // 1. Rutas públicas (Login y Registro)
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(
-                                "/v3/api-docs",        // ¡CLAVE! Ruta exacta que usa Maven
-                                "/v3/api-docs/**",     // Rutas hijas
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/swagger-resources/**",
-                                "/webjars/**",
-                                "/openapi.yaml"
-                        ).permitAll()
 
                         // 2. Rutas protegidas por Roles
                         .requestMatchers("/api/inv/**").hasRole("ADMIN")

@@ -63,8 +63,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope> <!-- Cambiado a runtime para que esté disponible al iniciar la app -->
-		</dependency>
+			<scope>runtime</scope> </dependency>
 
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -114,8 +113,7 @@
 						<goals><goal>start</goal></goals>
 						<configuration>
 							<profiles>
-								<profile>ci</profile> <!-- Activa el perfil 'ci' al iniciar la aplicación -->
-							</profiles>
+								<profile>ci</profile> </profiles>
 						</configuration>
 					</execution>
 					<execution>
@@ -181,7 +179,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<apiDocsUrl>http://localhost:8080/v3/api-docs.yaml</apiDocsUrl>
+					<apiDocsUrl>http://localhost:8081/v3/api-docs.yaml</apiDocsUrl>
 					<outputFileName>generated-openapi.yaml</outputFileName>
 					<outputDir>${project.build.directory}/openapi</outputDir>
 				</configuration>
