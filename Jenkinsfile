@@ -18,8 +18,8 @@ pipeline {
                 // 1. Damos permisos de ejecución a Maven
                 sh 'chmod +x ./mvnw'
 
-                // 2. Ejecutamos la validación COMPLETA (sin saltarnos los tests ni las validaciones)
-                sh './mvnw clean verify'
+                // 2. Ejecutamos la validación COMPLETA indicando el perfil "ci" para los tests
+                sh './mvnw clean verify -Dspring.profiles.active=ci'
             }
         }
     }
