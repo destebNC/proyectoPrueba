@@ -21,18 +21,19 @@ pipeline {
             }
         }
 
-        // 👇 NUEVA ETAPA: DOCKERIZAR 👇
         stage('Build Docker Image') {
             steps {
-                // Construimos la imagen y le ponemos un nombre (tag)
-                sh 'docker build -t mi-api-spring:latest .'
+                // Usamos el plugin Google Jib para construir la imagen Docker sin necesidad de tener Docker instalado.
+                // Esto generará la imagen empaquetada en la ruta: target/jib-image.tar
+                sh './mvnw compile com.google.cloud.tools:jib-maven-plugin:3.4.1:buildTar -Dimage=mi-api-spring:latest'
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'generated/**/*', fingerprint: true
+            // Guardamos el SDK generado y TAMBIÉN la imagen de Docker exportada (.tar)
+            archiveArtifacts artifacts: 'generated/**/*, target/jib-image.tar', fingerprint: true, allowEmptyArchive: true
         }
         success {
             echo '✅ Pipeline completado con ÉXITO'
