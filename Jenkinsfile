@@ -23,8 +23,11 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                // Añadimos el parámetro jib.from.image para que use Java 21 y no falle
-                sh './mvnw compile com.google.cloud.tools:jib-maven-plugin:3.4.1:buildTar -Dimage=mi-api-spring:latest -Djib.from.image=eclipse-temurin:21-jre-alpine'
+                // Hemos añadido jib.container.mainClass para decirle a Docker qué archivo arranca la app
+                sh './mvnw compile com.google.cloud.tools:jib-maven-plugin:3.4.1:buildTar \
+                    -Dimage=mi-api-spring:latest \
+                    -Djib.from.image=eclipse-temurin:21-jre-alpine \
+                    -Djib.container.mainClass=com.example.proyectoPrueba.ProyectoPruebaApplication'
             }
         }
     }
