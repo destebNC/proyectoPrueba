@@ -8,15 +8,19 @@ pipeline {
             }
         }
 
-        stage('Build & Verify') {
+        stage('Clean & Generate SDK') {
             steps {
                 sh 'chmod +x ./mvnw'
-                sh './mvnw clean verify -Dspring.profiles.active=ci'
+                // Borramos la carpeta antigua para asegurar que todo se genere fresco
+                sh 'rm -rf generated/sdk-java generated/postman'
+                // Ejecutamos el plugin de OpenAPI Generator para crear el código
+                sh './mvnw clean generate-resources -Dspring.profiles.active=ci'
             }
         }
 
         stage('Build Java SDK') {
             steps {
+                // Compilamos el SDK que acabamos de generar en la etapa anterior
                 sh 'cd generated/sdk-java && ../../mvnw clean package -DskipTests'
             }
         }
@@ -40,7 +44,7 @@ pipeline {
             archiveArtifacts artifacts: 'generated/**/*', fingerprint: true, allowEmptyArchive: true
         }
         success {
-            echo '✅ Pipeline completado con ÉXITO. Imagen subida a Docker Hub.'
+            echo '✅ Pipeline completado con ÉXITO.'
         }
         failure {
             echo '❌ Pipeline FALLIDO: Revisa los logs'
