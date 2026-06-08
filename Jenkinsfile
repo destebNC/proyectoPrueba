@@ -21,23 +21,26 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build & Push Docker Image') {
             steps {
-                // Hemos añadido jib.container.mainClass para decirle a Docker qué archivo arranca la app
-                sh './mvnw compile com.google.cloud.tools:jib-maven-plugin:3.4.1:buildTar \
-                    -Dimage=mi-api-spring:latest \
-                    -Djib.from.image=eclipse-temurin:21-jre-alpine \
-                    -Djib.container.mainClass=com.example.proyectoPrueba.ProyectoPruebaApplication'
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh './mvnw compile com.google.cloud.tools:jib-maven-plugin:3.4.1:build \
+                        -Dimage=docker.io/$DOCKER_USER/mi-api-spring:latest \
+                        -Djib.from.image=eclipse-temurin:21-jre-alpine \
+                        -Djib.container.mainClass=com.example.proyectoPrueba.ProyectoPruebaApplication \
+                        -Djib.to.auth.username=$DOCKER_USER \
+                        -Djib.to.auth.password=$DOCKER_PASSWORD'
+                }
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'generated/**/*, target/jib-image.tar', fingerprint: true, allowEmptyArchive: true
+            archiveArtifacts artifacts: 'generated/**/*', fingerprint: true, allowEmptyArchive: true
         }
         success {
-            echo '✅ Pipeline completado con ÉXITO'
+            echo '✅ Pipeline completado con ÉXITO. Imagen subida a Docker Hub.'
         }
         failure {
             echo '❌ Pipeline FALLIDO: Revisa los logs'
