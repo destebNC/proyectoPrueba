@@ -9,29 +9,28 @@ pipeline {
             }
         }
 
-        stage('Build & Verify Main Project') {
-            // ❌ ELIMINADO: el bloque "tools" que pedía NodeJS, ya que causa el error fatal.
+        stage('Clean & Generate SDK') {
             steps {
                 sh 'chmod +x ./mvnw'
 
-                // 1. Limpiamos las carpetas para que Jenkins genere los SDKs desde cero
+                // 1. Limpiamos las carpetas para que Jenkins genere los SDKs siempre desde cero
                 sh 'rm -rf generated/sdk-java generated/postman'
 
-                // 2. Ejecutamos build, tests, validaciones OpenAPI, lint y generación de SDKs
+                // 2. Ejecutamos build, tests, validaciones OpenAPI y generación de SDKs
                 sh './mvnw clean verify -Dspring.profiles.active=ci'
             }
         }
 
         stage('Build Generated Java SDK') {
             steps {
-                // Compilamos el SDK Java generado usando Gradle (como lo configuró tu compañero)
-                sh 'cd generated/sdk-java && chmod +x ./gradlew && ./gradlew clean build'
+                // 3. Compilamos el SDK Java generado USANDO MAVEN (esquivando el bug de Gradle con Java 21)
+                sh 'cd generated/sdk-java && ../../mvnw clean package -DskipTests'
             }
         }
 
         stage('Build & Push Docker Image') {
             steps {
-                // Inyectamos las credenciales y subimos la imagen usando Jib
+                // 4. Inyectamos las credenciales y subimos la imagen usando Jib
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh './mvnw compile com.google.cloud.tools:jib-maven-plugin:3.4.1:build \
                         -Dimage=docker.io/$DOCKER_USER/mi-api-spring:latest \
@@ -46,6 +45,7 @@ pipeline {
 
     post {
         always {
+            // Guardamos los artefactos por si queremos descargarlos manualmente desde Jenkins
             archiveArtifacts artifacts: 'generated/**/*', fingerprint: true, allowEmptyArchive: true
         }
         success {
