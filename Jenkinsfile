@@ -1,5 +1,4 @@
 pipeline {
-
     agent any
 
     stages {
@@ -10,25 +9,29 @@ pipeline {
             }
         }
 
-        stage('Build & Verify Main Project') { // Renombramos el stage para mayor claridad
-            tools {
-                nodejs 'NodeJS_18' // <--- ¡Asegúrate de que este nombre coincida con el que configuraste en Jenkins!
-            }
+        stage('Build & Verify Main Project') {
+            // ❌ ELIMINADO: el bloque "tools" que pedía NodeJS, ya que causa el error fatal.
             steps {
                 sh 'chmod +x ./mvnw'
-                // Ejecutamos el comando completo que incluye build, tests, validaciones OpenAPI, lint, breaking changes y generación de SDKs/Postman
+
+                // 1. Limpiamos las carpetas para que Jenkins genere los SDKs desde cero
+                sh 'rm -rf generated/sdk-java generated/postman'
+
+                // 2. Ejecutamos build, tests, validaciones OpenAPI, lint y generación de SDKs
                 sh './mvnw clean verify -Dspring.profiles.active=ci'
             }
         }
 
-        stage('Build Generated Java SDK') { // Stage para compilar el SDK Java generado
+        stage('Build Generated Java SDK') {
             steps {
+                // Compilamos el SDK Java generado usando Gradle (como lo configuró tu compañero)
                 sh 'cd generated/sdk-java && chmod +x ./gradlew && ./gradlew clean build'
             }
         }
 
-        stage('Build & Push Docker Image') { // Stage para construir y subir la imagen Docker
+        stage('Build & Push Docker Image') {
             steps {
+                // Inyectamos las credenciales y subimos la imagen usando Jib
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh './mvnw compile com.google.cloud.tools:jib-maven-plugin:3.4.1:build \
                         -Dimage=docker.io/$DOCKER_USER/mi-api-spring:latest \
@@ -46,10 +49,10 @@ pipeline {
             archiveArtifacts artifacts: 'generated/**/*', fingerprint: true, allowEmptyArchive: true
         }
         success {
-            echo 'Pipeline completado con ÉXITO.'
+            echo '✅ Pipeline completado con ÉXITO. Imagen subida a Docker Hub.'
         }
         failure {
-            echo 'Pipeline FALLIDO: Revisa los logs'
+            echo '❌ Pipeline FALLIDO: Revisa los logs'
         }
     }
 }
