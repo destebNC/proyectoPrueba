@@ -1,31 +1,33 @@
 pipeline {
+
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Clean & Generate SDK') {
+        stage('Build & Verify Main Project') { // Renombramos el stage para mayor claridad
+            tools {
+                nodejs 'NodeJS_18' // <--- ¡Asegúrate de que este nombre coincida con el que configuraste en Jenkins!
+            }
             steps {
                 sh 'chmod +x ./mvnw'
-                // Borramos la carpeta antigua para asegurar que todo se genere fresco
-                sh 'rm -rf generated/sdk-java generated/postman'
-                // Ejecutamos el plugin de OpenAPI Generator para crear el código
-                sh './mvnw clean generate-resources -Dspring.profiles.active=ci'
+                // Ejecutamos el comando completo que incluye build, tests, validaciones OpenAPI, lint, breaking changes y generación de SDKs/Postman
+                sh './mvnw clean verify -Dspring.profiles.active=ci'
             }
         }
 
-        stage('Build Java SDK') {
+        stage('Build Generated Java SDK') { // Stage para compilar el SDK Java generado
             steps {
-                // Compilamos el SDK que acabamos de generar en la etapa anterior
-                sh 'cd generated/sdk-java && ../../mvnw clean package -DskipTests'
+                sh 'cd generated/sdk-java && chmod +x ./gradlew && ./gradlew clean build'
             }
         }
 
-        stage('Build & Push Docker Image') {
+        stage('Build & Push Docker Image') { // Stage para construir y subir la imagen Docker
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh './mvnw compile com.google.cloud.tools:jib-maven-plugin:3.4.1:build \
@@ -44,10 +46,10 @@ pipeline {
             archiveArtifacts artifacts: 'generated/**/*', fingerprint: true, allowEmptyArchive: true
         }
         success {
-            echo '✅ Pipeline completado con ÉXITO.'
+            echo 'Pipeline completado con ÉXITO.'
         }
         failure {
-            echo '❌ Pipeline FALLIDO: Revisa los logs'
+            echo 'Pipeline FALLIDO: Revisa los logs'
         }
     }
 }
