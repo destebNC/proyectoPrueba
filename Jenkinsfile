@@ -72,6 +72,26 @@ pipeline {
             }
         }
 
+        // Publicar el SDK de TypeScript en NPM de forma automática
+        stage('Publish to NPM') {
+            steps {
+                withCredentials([string(credentialsId: 'npm-token', variable: 'NPM_TOKEN')]) {
+                    sh '''
+                        cd generated/sdk-typescript
+                        
+                        # Actualizamos la versión del package.json con la del parámetro de Jenkins
+                        npm version ${RELEASE_VERSION} --no-git-tag-version
+                        
+                        # Inyectamos el Token de autenticación de forma segura
+                        echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+                        
+                        # Publicamos en el repositorio oficial de NPM (sin flag de acceso por ser paquete global)
+                        npm publish
+                    '''
+                }
+            }
+        }
+
         // Generación de Release Notes
         stage('Generate Release Notes') {
             steps {
