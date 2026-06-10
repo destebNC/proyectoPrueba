@@ -20,7 +20,8 @@ pipeline {
         stage('Clean & Generate SDK') {
             steps {
                 sh 'chmod +x ./mvnw'
-                sh 'rm -rf generated/sdk-java generated/postman'
+                // Limpiamos también las nuevas carpetas de los SDKs para que se generen limpias
+                sh 'rm -rf generated/sdk-java generated/postman generated/sdk-typescript generated/sdk-csharp generated/sdk-php'
                 sh './mvnw clean generate-resources -Dspring.profiles.active=ci'
             }
         }
@@ -58,6 +59,15 @@ pipeline {
                     
                     # Copiamos y renombramos el SDK de Java
                     cp generated/sdk-java/target/openapi-java-client-1.0.0.jar release-artifacts/sdk-java-v${RELEASE_VERSION}.jar
+                    
+                    # Comprimimos el SDK de TypeScript (listo para npm install)
+                    tar -czvf release-artifacts/sdk-typescript-v${RELEASE_VERSION}.tgz -C generated/sdk-typescript .
+                    
+                    # Comprimimos el SDK de C#
+                    tar -czvf release-artifacts/sdk-csharp-v${RELEASE_VERSION}.tgz -C generated/sdk-csharp .
+                    
+                    # Comprimimos el SDK de PHP
+                    tar -czvf release-artifacts/sdk-php-v${RELEASE_VERSION}.tgz -C generated/sdk-php .
                 '''
             }
         }

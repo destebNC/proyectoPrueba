@@ -151,7 +151,7 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>generate-sdk</id>
+						<id>generate-sdk-java</id>
 						<phase>generate-resources</phase>
 						<goals><goal>generate</goal></goals>
 						<configuration>
@@ -162,6 +162,42 @@
 							<configOptions>
 								<useJakartaEe>true</useJakartaEe>
 							</configOptions>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>generate-sdk-typescript</id>
+						<phase>generate-resources</phase>
+						<goals><goal>generate</goal></goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
+							<generatorName>typescript-fetch</generatorName>
+							<output>${project.basedir}/generated/sdk-typescript</output>
+							<addCompileSourceRoot>false</addCompileSourceRoot>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>generate-sdk-csharp</id>
+						<phase>generate-resources</phase>
+						<goals><goal>generate</goal></goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
+							<generatorName>csharp</generatorName>
+							<output>${project.basedir}/generated/sdk-csharp</output>
+							<addCompileSourceRoot>false</addCompileSourceRoot>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>generate-sdk-php</id>
+						<phase>generate-resources</phase>
+						<goals><goal>generate</goal></goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
+							<generatorName>php</generatorName>
+							<output>${project.basedir}/generated/sdk-php</output>
+							<addCompileSourceRoot>false</addCompileSourceRoot>
 						</configuration>
 					</execution>
 				</executions>
@@ -203,38 +239,6 @@
 							</arguments>
 						</configuration>
 					</execution>
-					<!-- Comentado temporalmente porque oasdiff.exe no es compatible con Linux en Jenkins -->
-					<!--
-					<execution>
-						<id>compare-contract-vs-runtime</id>
-						<phase>verify</phase>
-						<goals><goal>exec</goal></goals>
-						<configuration>
-							<executable>${project.basedir}/oasdiff.exe</executable>
-							<arguments>
-								<argument>diff</argument>
-								<argument>${project.basedir}/src/main/resources/static/openapi.yaml</argument>
-								<argument>${project.build.directory}/openapi/generated-openapi.yaml</argument>
-							</arguments>
-						</configuration>
-					</execution>
-					-->
-					<!-- Comentado temporalmente porque oasdiff.exe no es compatible con Linux en Jenkins -->
-					<!--
-					<execution>
-						<id>breaking-changes-check</id>
-						<phase>verify</phase>
-						<goals><goal>exec</goal></goals>
-						<configuration>
-							<executable>${project.basedir}/oasdiff.exe</executable>
-							<arguments>
-								<argument>breaking</argument>
-								<argument>${project.basedir}/src/main/resources/static/openapi.yaml</argument>
-								<argument>${project.build.directory}/openapi/generated-openapi.yaml</argument>
-							</arguments>
-						</configuration>
-					</execution>
-					-->
 				</executions>
 			</plugin>
 		</plugins>
