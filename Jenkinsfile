@@ -5,7 +5,7 @@ pipeline {
     parameters {
         string(
                 name: 'RELEASE_VERSION',
-                defaultValue: '1.0.0',
+                defaultValue: '1.0.1',
                 description: 'Version to release (Semantic Versioning: MAJOR.MINOR.PATCH)'
         )
     }
@@ -79,13 +79,16 @@ pipeline {
                     sh '''
                         cd generated/sdk-typescript
                         
-                        # Actualizamos la versión del package.json con la del parámetro de Jenkins
-                        npm version ${RELEASE_VERSION} --no-git-tag-version
+                        # Añadimos --allow-same-version para evitar el error si coincide con la de origen
+                        npm version ${RELEASE_VERSION} --no-git-tag-version --allow-same-version
                         
                         # Inyectamos el Token de autenticación de forma segura
                         echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
                         
-                        # Publicamos en el repositorio oficial de NPM (sin flag de acceso por ser paquete global)
+                        # Instala las dependencias locales para poder usar el compilador tsc
+                        npm install
+                        
+                        # Publicamos en el repositorio oficial de NPM
                         npm publish
                     '''
                 }
