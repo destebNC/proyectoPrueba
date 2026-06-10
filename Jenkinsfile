@@ -88,8 +88,8 @@ pipeline {
                         # Instala las dependencias locales para poder usar el compilador tsc
                         npm install
                         
-                        # Publicamos en el repositorio oficial de NPM
-                        npm publish
+                        # Publicamos usando el ámbito personal con acceso público obligatorio
+                        npm publish --access public
                     '''
                 }
             }

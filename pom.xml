@@ -175,7 +175,7 @@
 							<output>${project.basedir}/generated/sdk-typescript</output>
 							<addCompileSourceRoot>false</addCompileSourceRoot>
 							<configOptions>
-								<npmName>mobbcadona</npmName>
+								<npmName>@jprogrami/mobbcadona</npmName>
 							</configOptions>
 						</configuration>
 					</execution>
