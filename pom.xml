@@ -14,9 +14,13 @@
 	<artifactId>proyectoPrueba</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>proyectoPrueba</name>
+	<description>API REST para gestionar inventarios y productos de un supermercado</description>
 
 	<properties>
 		<java.version>21</java.version>
+		<!-- Lombok 1.18.36 permite compilar tambien con JDK 22/23/24 -->
+		<lombok.version>1.18.36</lombok.version>
+		<openapi.spec>${project.basedir}/src/main/resources/static/openapi.yaml</openapi.spec>
 	</properties>
 
 	<dependencies>
@@ -41,6 +45,11 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -61,19 +70,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope> </dependency>
-
-		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 			<version>2.5.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.openapitools</groupId>
-			<artifactId>jackson-databind-nullable</artifactId>
-			<version>0.2.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -87,42 +86,49 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.atlassian.oai</groupId>
-			<artifactId>swagger-request-validator-mockmvc</artifactId>
-			<version>2.39.0</version>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
+			<groupId>com.atlassian.oai</groupId>
+			<artifactId>swagger-request-validator-mockmvc</artifactId>
+			<version>2.39.0</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<plugins>
+			<!-- Desde JDK 23 los procesadores de anotaciones deben declararse explicitamente -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<mainClass>com.example.proyectoPrueba.ProyectoPruebaApplication</mainClass>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
 				</configuration>
-				<executions>
-					<execution>
-						<id>pre-integration-test</id>
-						<goals><goal>start</goal></goals>
-						<configuration>
-							<profiles>
-								<profile>ci</profile> </profiles>
-						</configuration>
-					</execution>
-					<execution>
-						<id>post-integration-test</id>
-						<goals><goal>stop</goal></goals>
-					</execution>
-				</executions>
 			</plugin>
 
+			<!-- Valida la sintaxis del contrato OpenAPI en cada build -->
 			<plugin>
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
@@ -133,117 +139,162 @@
 						<phase>validate</phase>
 						<goals><goal>generate</goal></goals>
 						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
+							<inputSpec>${openapi.spec}</inputSpec>
 							<generatorName>openapi-yaml</generatorName>
 							<output>${project.build.directory}/openapi-validation</output>
 							<addCompileSourceRoot>false</addCompileSourceRoot>
-						</configuration>
-					</execution>
-					<execution>
-						<id>generate-postman</id>
-						<phase>generate-resources</phase>
-						<goals><goal>generate</goal></goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
-							<generatorName>postman-collection</generatorName>
-							<output>${project.basedir}/generated/postman</output>
-							<addCompileSourceRoot>false</addCompileSourceRoot>
-						</configuration>
-					</execution>
-					<execution>
-						<id>generate-sdk-java</id>
-						<phase>generate-resources</phase>
-						<goals><goal>generate</goal></goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
-							<generatorName>java</generatorName>
-							<output>${project.basedir}/generated/sdk-java</output>
-							<addCompileSourceRoot>false</addCompileSourceRoot>
-							<configOptions>
-								<useJakartaEe>true</useJakartaEe>
-							</configOptions>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>generate-sdk-typescript</id>
-						<phase>generate-resources</phase>
-						<goals><goal>generate</goal></goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
-							<generatorName>typescript-fetch</generatorName>
-							<output>${project.basedir}/generated/sdk-typescript</output>
-							<addCompileSourceRoot>false</addCompileSourceRoot>
-							<configOptions>
-								<npmName>@jprogrami/mobbcadona</npmName>
-							</configOptions>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>generate-sdk-csharp</id>
-						<phase>generate-resources</phase>
-						<goals><goal>generate</goal></goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
-							<generatorName>csharp</generatorName>
-							<output>${project.basedir}/generated/sdk-csharp</output>
-							<addCompileSourceRoot>false</addCompileSourceRoot>
-						</configuration>
-					</execution>
-
-					<execution>
-						<id>generate-sdk-php</id>
-						<phase>generate-resources</phase>
-						<goals><goal>generate</goal></goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/static/openapi.yaml</inputSpec>
-							<generatorName>php</generatorName>
-							<output>${project.basedir}/generated/sdk-php</output>
-							<addCompileSourceRoot>false</addCompileSourceRoot>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<groupId>org.springdoc</groupId>
-				<artifactId>springdoc-openapi-maven-plugin</artifactId>
-				<version>1.4</version>
-				<executions>
-					<execution>
-						<id>integration-test</id>
-						<phase>integration-test</phase>
-						<goals><goal>generate</goal></goals>
-					</execution>
-				</executions>
-				<configuration>
-					<apiDocsUrl>http://localhost:8081/v3/api-docs.yaml</apiDocsUrl>
-					<outputFileName>generated-openapi.yaml</outputFileName>
-					<outputDir>${project.build.directory}/openapi</outputDir>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<id>lint-openapi</id>
-						<phase>verify</phase>
-						<goals><goal>exec</goal></goals>
-						<configuration>
-							<executable>npx</executable>
-							<arguments>
-								<argument>@stoplight/spectral-cli</argument>
-								<argument>lint</argument>
-								<argument>${project.basedir}/src/main/resources/static/openapi.yaml</argument>
-							</arguments>
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<!-- ./mvnw -Psdk generate-resources
+		     Genera los SDKs (Java, TypeScript, C#, PHP) y la coleccion Postman en generated/ -->
+		<profile>
+			<id>sdk</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.openapitools</groupId>
+						<artifactId>openapi-generator-maven-plugin</artifactId>
+						<version>7.4.0</version>
+						<executions>
+							<execution>
+								<id>generate-postman</id>
+								<phase>generate-resources</phase>
+								<goals><goal>generate</goal></goals>
+								<configuration>
+									<inputSpec>${openapi.spec}</inputSpec>
+									<generatorName>postman-collection</generatorName>
+									<output>${project.basedir}/generated/postman</output>
+									<addCompileSourceRoot>false</addCompileSourceRoot>
+								</configuration>
+							</execution>
+							<execution>
+								<id>generate-sdk-java</id>
+								<phase>generate-resources</phase>
+								<goals><goal>generate</goal></goals>
+								<configuration>
+									<inputSpec>${openapi.spec}</inputSpec>
+									<generatorName>java</generatorName>
+									<output>${project.basedir}/generated/sdk-java</output>
+									<addCompileSourceRoot>false</addCompileSourceRoot>
+									<configOptions>
+										<useJakartaEe>true</useJakartaEe>
+									</configOptions>
+								</configuration>
+							</execution>
+							<execution>
+								<id>generate-sdk-typescript</id>
+								<phase>generate-resources</phase>
+								<goals><goal>generate</goal></goals>
+								<configuration>
+									<inputSpec>${openapi.spec}</inputSpec>
+									<generatorName>typescript-fetch</generatorName>
+									<output>${project.basedir}/generated/sdk-typescript</output>
+									<addCompileSourceRoot>false</addCompileSourceRoot>
+									<configOptions>
+										<npmName>@jprogrami/mobbcadona</npmName>
+									</configOptions>
+								</configuration>
+							</execution>
+							<execution>
+								<id>generate-sdk-csharp</id>
+								<phase>generate-resources</phase>
+								<goals><goal>generate</goal></goals>
+								<configuration>
+									<inputSpec>${openapi.spec}</inputSpec>
+									<generatorName>csharp</generatorName>
+									<output>${project.basedir}/generated/sdk-csharp</output>
+									<addCompileSourceRoot>false</addCompileSourceRoot>
+								</configuration>
+							</execution>
+							<execution>
+								<id>generate-sdk-php</id>
+								<phase>generate-resources</phase>
+								<goals><goal>generate</goal></goals>
+								<configuration>
+									<inputSpec>${openapi.spec}</inputSpec>
+									<generatorName>php</generatorName>
+									<output>${project.basedir}/generated/sdk-php</output>
+									<addCompileSourceRoot>false</addCompileSourceRoot>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+
+		<!-- ./mvnw -Pcontract verify   (requiere Node.js / npx)
+		     Arranca la app con el perfil ci (puerto 8081), guarda el OpenAPI que genera springdoc
+		     en target/openapi/ y pasa Spectral sobre el contrato -->
+		<profile>
+			<id>contract</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>pre-integration-test</id>
+								<goals><goal>start</goal></goals>
+								<configuration>
+									<profiles>
+										<profile>ci</profile>
+									</profiles>
+								</configuration>
+							</execution>
+							<execution>
+								<id>post-integration-test</id>
+								<goals><goal>stop</goal></goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.springdoc</groupId>
+						<artifactId>springdoc-openapi-maven-plugin</artifactId>
+						<version>1.4</version>
+						<executions>
+							<execution>
+								<id>integration-test</id>
+								<phase>integration-test</phase>
+								<goals><goal>generate</goal></goals>
+							</execution>
+						</executions>
+						<configuration>
+							<apiDocsUrl>http://localhost:8081/v3/api-docs.yaml</apiDocsUrl>
+							<outputFileName>generated-openapi.yaml</outputFileName>
+							<outputDir>${project.build.directory}/openapi</outputDir>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>3.1.0</version>
+						<executions>
+							<execution>
+								<id>lint-openapi</id>
+								<phase>verify</phase>
+								<goals><goal>exec</goal></goals>
+								<configuration>
+									<executable>npx</executable>
+									<arguments>
+										<argument>--yes</argument>
+										<argument>@stoplight/spectral-cli</argument>
+										<argument>lint</argument>
+										<argument>${openapi.spec}</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

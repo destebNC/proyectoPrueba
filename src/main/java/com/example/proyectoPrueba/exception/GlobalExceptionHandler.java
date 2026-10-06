@@ -1,66 +1,78 @@
 package com.example.proyectoPrueba.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import jakarta.servlet.http.HttpServletRequest;
-import java.net.URI;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
 import java.util.List;
 
+/**
+ * Convierte las excepciones en respuestas RFC 7807 (application/problem+json).
+ * Los errores estandar de Spring MVC (JSON mal formado, metodo no permitido, ruta inexistente...)
+ * los resuelve la clase padre con su codigo HTTP correcto.
+ */
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    // 1. Manejo de Excepciones de Lógica de Negocio (Usuario no encontrado, Contraseña mala, etc.)
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ProblemDetail> handleBusinessErrors(RuntimeException ex, HttpServletRequest request) {
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.BAD_REQUEST, // Código 400
-                ex.getMessage() // Aquí sale el mensaje exacto: "Contraseña incorrecta" o "Inventario no encontrado"
-        );
-        problem.setTitle("Error de lógica de negocio");
-        problem.setType(URI.create("https://ejemplo.com/errores/bad-request"));
-        problem.setInstance(URI.create(request.getRequestURI()));
+    private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ProblemDetail handleNotFound(ResourceNotFoundException ex) {
+        return problem(HttpStatus.NOT_FOUND, "Recurso no encontrado", ex.getMessage());
     }
 
-    // 2. Manejo de Errores de Validación (Como un @Email mal puesto, o un @NotNull vacío)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ProblemDetail> handleValidationErrors(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Datos de entrada inválidos");
-        problem.setTitle("Error de validación");
-        problem.setInstance(URI.create(request.getRequestURI()));
+    @ExceptionHandler(ConflictException.class)
+    public ProblemDetail handleConflict(ConflictException ex) {
+        return problem(HttpStatus.CONFLICT, "Conflicto", ex.getMessage());
+    }
 
-        // Recogemos todos los errores de los campos y los juntamos
-        List<String> errors = ex.getBindingResult().getFieldErrors()
-                .stream().map(f -> f.getField() + ": " + f.getDefaultMessage())
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ProblemDetail handleInvalidCredentials(InvalidCredentialsException ex) {
+        return problem(HttpStatus.UNAUTHORIZED, "Credenciales invalidas", ex.getMessage());
+    }
+
+    // Por ejemplo /api/productos/abc o page=-1
+    @ExceptionHandler({MethodArgumentTypeMismatchException.class, IllegalArgumentException.class})
+    public ProblemDetail handleBadArgument(Exception ex) {
+        return problem(HttpStatus.BAD_REQUEST, "Peticion incorrecta", ex.getMessage());
+    }
+
+    // Errores de @Valid en el cuerpo de la peticion
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(@NonNull MethodArgumentNotValidException ex,
+                                                                  @NonNull HttpHeaders headers,
+                                                                  @NonNull HttpStatusCode status,
+                                                                  @NonNull WebRequest request) {
+        ProblemDetail problem = problem(HttpStatus.BAD_REQUEST, "Error de validacion", "Datos de entrada invalidos");
+        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
+                .map(f -> f.getField() + ": " + f.getDefaultMessage())
                 .toList();
-
-        problem.setProperty("errores", errors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
+        problem.setProperty("errors", errors);
+        return ResponseEntity.badRequest().body(problem);
     }
 
-    // 3. Manejo de TODOS los demás errores imprevistos (500)
+    // Cualquier error no previsto: 500 sin exponer detalles internos (se registran en el log)
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ProblemDetail> handleAllErrors(Exception ex, HttpServletRequest request) {
+    public ProblemDetail handleUnexpected(Exception ex) {
+        log.error("Error no controlado", ex);
+        return problem(HttpStatus.INTERNAL_SERVER_ERROR, "Error interno del servidor",
+                "Se ha producido un error interno. Por favor, contacte con soporte.");
+    }
 
-        ProblemDetail problem = ProblemDetail.forStatusAndDetail(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "Se ha producido un error interno. Por favor, contacte con soporte."
-        );
-
-        problem.setTitle("Error interno del servidor");
-        problem.setType(URI.create("https://ejemplo.com/errores/error-interno"));
-        problem.setInstance(URI.create(request.getRequestURI()));
-
-        // Añadimos el mensaje real del error para depurar
-        problem.setProperty("debug_message", ex.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(problem);
+    private static ProblemDetail problem(HttpStatus status, String title, String detail) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(status, detail);
+        problem.setTitle(title);
+        return problem;
     }
 }

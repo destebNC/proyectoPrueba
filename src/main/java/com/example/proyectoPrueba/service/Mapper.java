@@ -6,58 +6,39 @@ import com.example.proyectoPrueba.model.Inventory;
 import com.example.proyectoPrueba.model.Product;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections; // Importar Collections
 import java.util.List;
-import java.util.Optional; // Importar Optional
-import java.util.stream.Collectors;
 
+/** Convierte entidades JPA <-> DTOs. La API nunca expone las entidades directamente. */
 @Component
 public class Mapper {
 
     public ProductDto productToDto(Product product) {
+        Integer inventoryId = product.getInventory() != null ? product.getInventory().getId() : null;
         return new ProductDto(
+                product.getId(),
                 product.getName(),
                 product.getPrice(),
-                product.getWeight()
+                product.getWeight(),
+                inventoryId
         );
     }
 
     public Product dtoToProduct(ProductDto productDto) {
-        Product product = new Product();
-        // Correcto para records
-        product.setName(productDto.name());
-        product.setPrice(productDto.price());
-        product.setWeight(productDto.weight());
-        return product;
+        return new Product(productDto.name(), productDto.price(), productDto.weight());
     }
 
     public InventoryDto inventoryToDto(Inventory inventory) {
-        // Manejo de null para productList en Inventory (modelo)
-        List<ProductDto> productDtos = Optional.ofNullable(inventory.getProductList())
-                                                .orElseGet(Collections::emptyList) // Si es null, usa una lista vacía
-                                                .stream()
-                                                .map(this::productToDto)
-                                                .collect(Collectors.toList());
-
-        return new InventoryDto(
-                inventory.getName(),
-                productDtos
-        );
+        List<ProductDto> products = inventory.getProductList().stream()
+                .map(this::productToDto)
+                .toList();
+        return new InventoryDto(inventory.getId(), inventory.getName(), products);
     }
 
     public Inventory dtoToInventory(InventoryDto inventoryDto) {
-        Inventory inventory = new Inventory();
-        // Correcto para records: usar .name()
-        inventory.setName(inventoryDto.name());
-
-        // Manejo de null para products en InventoryDto (record)
-        List<Product> products = Optional.ofNullable(inventoryDto.products())
-                                        .orElseGet(Collections::emptyList) // Si es null, usa una lista vacía
-                                        .stream()
-                                        .map(this::dtoToProduct)
-                                        .collect(Collectors.toList());
-        inventory.setProductList(products);
-
+        Inventory inventory = new Inventory(inventoryDto.name());
+        if (inventoryDto.products() != null) {
+            inventoryDto.products().forEach(p -> inventory.addProduct(dtoToProduct(p)));
+        }
         return inventory;
     }
 }

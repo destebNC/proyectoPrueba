@@ -1,51 +1,64 @@
 package com.example.proyectoPrueba.controller;
 
-import com.example.proyectoPrueba.dto.InventoryDto; // Importación correcta del DTO
+import com.example.proyectoPrueba.dto.InventoryDto;
 import com.example.proyectoPrueba.service.InventoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
+/** Gestion de inventarios. Solo rol ADMIN (ver SecurityConfig). */
 @RestController
 @RequestMapping("/api/inv")
-@Tag(name = "Inventories") // Alineado con el nombre del grupo en tu openapi.yaml manual
+@Tag(name = "Inventories")
 public class InventoryController {
 
-    @Autowired
-    private InventoryService inventoryService;
+    private final InventoryService inventoryService;
+
+    public InventoryController(InventoryService inventoryService) {
+        this.inventoryService = inventoryService;
+    }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(operationId = "apiInvPost", summary = "Create inventory")
-    public ResponseEntity<InventoryDto> create(@RequestBody InventoryDto inventoryDto) {
-        // En tu service el método es save(InventoryDto inventoryDto) y es void
-        inventoryService.save(inventoryDto);
-        return ResponseEntity.ok(inventoryDto);
+    public InventoryDto create(@Valid @RequestBody InventoryDto inventoryDto) {
+        return inventoryService.create(inventoryDto);
+    }
+
+    @GetMapping
+    @Operation(operationId = "apiInvGet", summary = "List all inventories")
+    public List<InventoryDto> getAll() {
+        return inventoryService.getAll();
     }
 
     @GetMapping("/paginated")
     @Operation(operationId = "apiInvPaginatedGet", summary = "List inventories (Paginated)")
-    public ResponseEntity<Page<InventoryDto>> getPaginated(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        // En tu service el método se llama getInventoryPaginated
-        return ResponseEntity.ok(inventoryService.getInventoryPaginated(page, size));
+    public Page<InventoryDto> getPaginated(@RequestParam(defaultValue = "0") int page,
+                                           @RequestParam(defaultValue = "10") int size) {
+        return inventoryService.getPaginated(page, size);
+    }
+
+    @GetMapping("/{id}")
+    @Operation(operationId = "apiInvIdGet", summary = "Get inventory by ID")
+    public InventoryDto getById(@PathVariable Integer id) {
+        return inventoryService.getById(id);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(operationId = "apiInvIdPut", summary = "Rename inventory")
+    public InventoryDto update(@PathVariable Integer id, @Valid @RequestBody InventoryDto inventoryDto) {
+        return inventoryService.update(id, inventoryDto);
     }
 
     @DeleteMapping("/{id}")
-    @Operation(operationId = "apiInvIdDelete", summary = "Delete inventory")
-    public ResponseEntity<Void> deleteInv(@PathVariable Integer id) {
-        // En tu service el método se llama delete(Integer inventoryId)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(operationId = "apiInvIdDelete", summary = "Delete inventory and its products")
+    public void delete(@PathVariable Integer id) {
         inventoryService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping
-    @Operation(summary = "List all inventories (For C# SDK)")
-    public ResponseEntity<java.util.List<InventoryDto>> getAll() {
-        // Llama al método getAll() programado en InventoryService
-        return ResponseEntity.ok(inventoryService.getAll());
     }
 }

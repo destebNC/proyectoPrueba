@@ -1,26 +1,37 @@
 package com.example.proyectoPrueba.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "inventarios")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Inventory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "El nombre del inventario es obligatorio")
+    @Column(nullable = false)
     private String name;
 
     @OneToMany(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<Product> productList;
+    private List<Product> productList = new ArrayList<>();
+
+    public Inventory(String name) {
+        this.name = name;
+    }
+
+    /** Mantiene sincronizados los dos lados de la relacion. */
+    public void addProduct(Product product) {
+        product.setInventory(this);
+        productList.add(product);
+    }
 }

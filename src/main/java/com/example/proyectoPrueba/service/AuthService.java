@@ -1,47 +1,49 @@
 package com.example.proyectoPrueba.service;
 
-import com.example.proyectoPrueba.JwtUtil; // Aseguramos el import correcto
 import com.example.proyectoPrueba.dto.LoginRequestDto;
 import com.example.proyectoPrueba.dto.RegisterRequestDto;
+import com.example.proyectoPrueba.exception.ConflictException;
+import com.example.proyectoPrueba.exception.InvalidCredentialsException;
 import com.example.proyectoPrueba.model.User;
 import com.example.proyectoPrueba.repository.UserRepository;
+import com.example.proyectoPrueba.security.JwtUtil;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthService {
 
+    public static final String ROLE_USER = "USER";
+    public static final String ROLE_ADMIN = "ADMIN";
+
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    // ELIMINADO: JwtUtil del constructor
-    public AuthService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
-    public void register(RegisterRequestDto dto) {
+    /** Registra un usuario con rol USER y devuelve su token. Los ADMIN se crean al arrancar (DataInitializer). */
+    @Transactional
+    public String register(RegisterRequestDto dto) {
         if (userRepository.findByUsername(dto.username()).isPresent()) {
-            throw new RuntimeException("El usuario ya existe");
+            throw new ConflictException("El usuario '" + dto.username() + "' ya existe");
         }
-
-        User user = new User();
-        user.setUsername(dto.username());
-        user.setPassword(passwordEncoder.encode(dto.password()));
-        user.setRole(dto.role()); // Guardamos el rol que viene del DTO
-
-        userRepository.save(user);
+        User user = userRepository.save(
+                new User(dto.username(), passwordEncoder.encode(dto.password()), ROLE_USER));
+        return jwtUtil.generateToken(user.getUsername(), user.getRole());
     }
 
+    @Transactional(readOnly = true)
     public String login(LoginRequestDto dto) {
+        // Mismo error si el usuario no existe o la contraseña falla: no revelamos que usuarios existen
         User user = userRepository.findByUsername(dto.username())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        if (passwordEncoder.matches(dto.password(), user.getPassword())) {
-            // Llamada ESTÁTICA a tu utilidad JWT
-            return JwtUtil.generateToken(user.getUsername(), user.getRole());
-        } else {
-            throw new RuntimeException("Contraseña incorrecta");
-        }
+                .filter(u -> passwordEncoder.matches(dto.password(), u.getPassword()))
+                .orElseThrow(InvalidCredentialsException::new);
+        return jwtUtil.generateToken(user.getUsername(), user.getRole());
     }
 }

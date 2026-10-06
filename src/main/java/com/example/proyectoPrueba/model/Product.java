@@ -1,33 +1,36 @@
 package com.example.proyectoPrueba.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "productos")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "El nombre es obligatorio")
+    @Column(nullable = false)
     private String name;
 
-    @NotNull(message = "El precio es obligatorio")
-    @Positive(message = "El precio debe ser positivo")
+    @Column(nullable = false)
     private Double price;
 
-    @PositiveOrZero
     private Double weight;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "inventory_id")
-    @JsonBackReference // Evita bucles infinitos al convertir a JSON
     private Inventory inventory;
+
+    public Product(String name, Double price, Double weight) {
+        this.name = name;
+        this.price = price;
+        this.weight = weight;
+    }
 }
