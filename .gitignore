@@ -34,8 +34,5 @@ build/
 
 generated/
 
-##Contraseña: 3d43aaff7fac41a4abfaeb4ad395e92e
-##Usuario: juanca_admin
-##Contraseña: admin
-
-
+release-artifacts/
+.env
