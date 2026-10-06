@@ -37,9 +37,9 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh './mvnw compile com.google.cloud.tools:jib-maven-plugin:3.4.1:build \
-                        -Dimage=docker.io/$DOCKER_USER/mi-api-spring:latest \
+                        -Dimage=docker.io/$DOCKER_USER/supermercado-api:latest \
                         -Djib.from.image=eclipse-temurin:21-jre-alpine \
-                        -Djib.container.mainClass=com.example.proyectoPrueba.ProyectoPruebaApplication \
+                        -Djib.container.mainClass=com.destebnc.supermercado.SupermercadoApplication \
                         -Djib.to.auth.username=$DOCKER_USER \
                         -Djib.to.auth.password=$DOCKER_PASSWORD'
                 }
@@ -59,7 +59,7 @@ pipeline {
                     cp generated/postman/postman.json release-artifacts/postman-v${RELEASE_VERSION}.json
                     
                     # Copiamos y renombramos el SDK de Java
-                    cp generated/sdk-java/target/openapi-java-client-1.0.0.jar release-artifacts/sdk-java-v${RELEASE_VERSION}.jar
+                    cp generated/sdk-java/target/supermercado-sdk-*.jar release-artifacts/sdk-java-v${RELEASE_VERSION}.jar
                     
                     # Comprimimos el SDK de TypeScript (listo para npm install)
                     tar -czvf release-artifacts/sdk-typescript-v${RELEASE_VERSION}.tgz -C generated/sdk-typescript .

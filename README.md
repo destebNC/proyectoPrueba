@@ -42,7 +42,7 @@ Para borrarlo todo: `docker compose down -v`.
 
 ### Opción C — IntelliJ IDEA
 
-Abre la carpeta del proyecto y ejecuta la clase `ProyectoPruebaApplication`.
+Abre la carpeta del proyecto y ejecuta la clase `SupermercadoApplication`.
 
 ---
 
@@ -52,8 +52,8 @@ Con cualquiera de las tres, abre **http://localhost:8080/swagger-ui.html**.
 
 | Usuario | Contraseña | Rol   | Puede usar                                   |
 |---------|------------|-------|----------------------------------------------|
-| `admin` | `admin123` | ADMIN | Inventarios (`/api/inv`) y productos         |
-| `user`  | `user123`  | USER  | Productos (`/api/productos`)                 |
+| `admin` | `admin123` | ADMIN | Todo                                         |
+| `user`  | `user123`  | USER  | Productos (no puede crear, renombrar ni borrar inventarios) |
 
 Cualquiera puede registrarse con `POST /auth/register`; las cuentas nuevas siempre tienen el rol **USER**.
 
@@ -80,24 +80,24 @@ Cliente ──HTTP + JWT──▶ Controller ──▶ Service ──▶ Reposit
 
 ### Endpoints
 
-| Método | Ruta                                             | Rol         | Descripción                              |
-|--------|--------------------------------------------------|-------------|------------------------------------------|
-| POST   | `/auth/register`                                 | público     | Crea un usuario USER y devuelve un token |
-| POST   | `/auth/login`                                    | público     | Devuelve un token JWT (1 hora)           |
-| GET    | `/api/inv`                                       | ADMIN       | Lista todos los inventarios              |
-| GET    | `/api/inv/paginated?page=0&size=10`              | ADMIN       | Lista inventarios paginados              |
-| GET    | `/api/inv/{id}`                                  | ADMIN       | Obtiene un inventario con sus productos  |
-| POST   | `/api/inv`                                       | ADMIN       | Crea un inventario (con o sin productos) |
-| PUT    | `/api/inv/{id}`                                  | ADMIN       | Renombra un inventario                   |
-| DELETE | `/api/inv/{id}`                                  | ADMIN       | Borra un inventario y sus productos      |
-| GET    | `/api/productos`                                 | ADMIN, USER | Lista todos los productos                |
-| GET    | `/api/productos/paginated`                       | ADMIN, USER | Lista productos paginados                |
-| GET    | `/api/productos/{id}`                            | ADMIN, USER | Obtiene un producto                      |
-| POST   | `/api/productos`                                 | ADMIN, USER | Crea un producto sin inventario          |
-| POST   | `/api/productos/inv/{inventoryId}`               | ADMIN, USER | Añade un producto a un inventario        |
-| GET    | `/api/productos/inv/{inventoryId}/paginated`     | ADMIN, USER | Productos de un inventario, paginados    |
-| PUT    | `/api/productos/inv/{inventoryId}/{productId}`   | ADMIN, USER | Actualiza un producto del inventario     |
-| DELETE | `/api/productos/inv/{inventoryId}/{productId}`   | ADMIN, USER | Borra un producto del inventario         |
+Los listados están paginados con `?page=0&size=10` (máximo 100 por página).
+
+| Método | Ruta                                                 | Rol         | Descripción                              |
+|--------|------------------------------------------------------|-------------|------------------------------------------|
+| POST   | `/auth/register`                                     | público     | Crea un usuario USER y devuelve un token |
+| POST   | `/auth/login`                                        | público     | Devuelve un token JWT (1 hora)           |
+| GET    | `/api/inventories`                                   | ADMIN       | Lista los inventarios                    |
+| POST   | `/api/inventories`                                   | ADMIN       | Crea un inventario (con o sin productos) |
+| GET    | `/api/inventories/{id}`                              | ADMIN       | Obtiene un inventario con sus productos  |
+| PUT    | `/api/inventories/{id}`                              | ADMIN       | Renombra un inventario                   |
+| DELETE | `/api/inventories/{id}`                              | ADMIN       | Borra un inventario y sus productos      |
+| GET    | `/api/inventories/{inventoryId}/products`            | ADMIN, USER | Productos de un inventario               |
+| POST   | `/api/inventories/{inventoryId}/products`            | ADMIN, USER | Añade un producto a un inventario        |
+| PUT    | `/api/inventories/{inventoryId}/products/{productId}`| ADMIN, USER | Actualiza un producto del inventario     |
+| DELETE | `/api/inventories/{inventoryId}/products/{productId}`| ADMIN, USER | Borra un producto del inventario         |
+| GET    | `/api/products`                                      | ADMIN, USER | Lista todos los productos                |
+| POST   | `/api/products`                                      | ADMIN, USER | Crea un producto sin inventario          |
+| GET    | `/api/products/{id}`                                 | ADMIN, USER | Obtiene un producto                      |
 
 Códigos de respuesta: `200` OK · `201` creado · `204` borrado · `400` datos no válidos ·
 `401` sin token, token no válido o credenciales incorrectas · `403` rol insuficiente · `404` no existe · `409` usuario ya existe.
@@ -111,12 +111,12 @@ TOKEN=$(curl -s -X POST http://localhost:8080/auth/login \
   -d '{"username":"admin","password":"admin123"}' | sed 's/.*"token":"\([^"]*\)".*/\1/')
 
 # 2. Crear un inventario con un producto
-curl -X POST http://localhost:8080/api/inv \
+curl -X POST http://localhost:8080/api/inventories \
   -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   -d '{"name":"Almacen Sevilla","products":[{"name":"Gazpacho 1L","price":2.5,"weight":1}]}'
 
 # 3. Ver sus productos paginados
-curl "http://localhost:8080/api/productos/inv/3/paginated?page=0&size=5" -H "Authorization: Bearer $TOKEN"
+curl "http://localhost:8080/api/inventories/3/products?page=0&size=5" -H "Authorization: Bearer $TOKEN"
 ```
 
 ## Configuración

@@ -18,7 +18,7 @@ RUN addgroup -S app && adduser -S app -G app
 USER app
 WORKDIR /app
 
-COPY --from=build /build/target/proyectoPrueba-*.jar app.jar
+COPY --from=build /build/target/supermercado-api-*.jar app.jar
 
 EXPOSE 8080
 

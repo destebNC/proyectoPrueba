@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Supermercado API
+  title: Inventory Management API
   description: |
     RESTful API for supermarket inventory and product management, secured with JWT.
 
@@ -8,16 +8,12 @@ info:
        or create a USER account with `POST /auth/register`.
     2. Send it in every request as `Authorization: Bearer <token>`.
 
-    Roles: managing inventories (`/api/inventories`) requires ADMIN; products
-    (`/api/products` and `/api/inventories/{inventoryId}/products`) require ADMIN or USER.
+    Roles: `/api/inv/**` requires ADMIN; `/api/productos/**` requires ADMIN or USER.
     Errors follow RFC 7807 (`application/problem+json`).
-  version: 2.0.0
+  version: 1.1.0
 
 servers:
-  - url: /
-    description: Same server that serves this document
   - url: http://localhost:8080
-    description: Local
 
 security:
   - bearerAuth: []
@@ -33,7 +29,7 @@ paths:
   /auth/register:
     post:
       tags: [ Authentication ]
-      operationId: register
+      operationId: authRegisterPost
       summary: User registration (always role USER)
       security: []
       requestBody:
@@ -57,7 +53,7 @@ paths:
   /auth/login:
     post:
       tags: [ Authentication ]
-      operationId: login
+      operationId: authLoginPost
       summary: User login
       security: []
       requestBody:
@@ -78,30 +74,27 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
 
-  /api/inventories:
+  /api/inv:
     get:
       tags: [ Inventories ]
-      operationId: listInventories
-      summary: List inventories (paginated)
-      parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/Size'
+      operationId: apiInvGet
+      summary: List all inventories
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InventoryPage'
-        '400':
-          $ref: '#/components/responses/BadRequest'
+                type: array
+                items:
+                  $ref: '#/components/schemas/InventoryDto'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
     post:
       tags: [ Inventories ]
-      operationId: createInventory
+      operationId: apiInvPost
       summary: Create inventory (optionally with products)
       requestBody:
         required: true
@@ -123,7 +116,29 @@ paths:
         '403':
           $ref: '#/components/responses/Forbidden'
 
-  /api/inventories/{id}:
+  /api/inv/paginated:
+    get:
+      tags: [ Inventories ]
+      operationId: apiInvPaginatedGet
+      summary: List inventories (Paginated)
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /api/inv/{id}:
     parameters:
       - name: id
         in: path
@@ -131,7 +146,7 @@ paths:
         schema: { type: integer }
     get:
       tags: [ Inventories ]
-      operationId: getInventory
+      operationId: apiInvIdGet
       summary: Get inventory by ID
       responses:
         '200':
@@ -140,8 +155,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/InventoryDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -150,7 +163,7 @@ paths:
           $ref: '#/components/responses/NotFound'
     put:
       tags: [ Inventories ]
-      operationId: updateInventory
+      operationId: apiInvIdPut
       summary: Rename inventory (products are ignored)
       requestBody:
         required: true
@@ -175,7 +188,7 @@ paths:
           $ref: '#/components/responses/NotFound'
     delete:
       tags: [ Inventories ]
-      operationId: deleteInventory
+      operationId: apiInvIdDelete
       summary: Delete inventory and its products
       responses:
         '204':
@@ -187,13 +200,49 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/inventories/{inventoryId}/products:
-    parameters:
-      - $ref: '#/components/parameters/InventoryId'
+  /api/productos:
     get:
       tags: [ Products ]
-      operationId: listInventoryProducts
-      summary: List products of an inventory (paginated)
+      operationId: apiProductosGet
+      summary: List all products
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProductDto'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [ Products ]
+      operationId: apiProductosPost
+      summary: Add standalone product (without inventory)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDto'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /api/productos/paginated:
+    get:
+      tags: [ Products ]
+      operationId: apiProductosPaginatedGet
+      summary: List all products (Paginated)
       parameters:
         - $ref: '#/components/parameters/Page'
         - $ref: '#/components/parameters/Size'
@@ -208,12 +257,35 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+
+  /api/productos/{product_id}:
+    get:
+      tags: [ Products ]
+      operationId: apiProductosProductIdGet
+      summary: Get product by ID
+      parameters:
+        - $ref: '#/components/parameters/ProductId'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDto'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+
+  /api/productos/inv/{inventory_id}:
     post:
       tags: [ Products ]
-      operationId: addProductToInventory
-      summary: Add product to an inventory
+      operationId: apiProductosInvInventoryIdPost
+      summary: Add product to specific inventory
+      parameters:
+        - $ref: '#/components/parameters/InventoryId'
       requestBody:
         required: true
         content:
@@ -234,14 +306,37 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  /api/inventories/{inventoryId}/products/{productId}:
+  /api/productos/inv/{inventory_id}/paginated:
+    get:
+      tags: [ Products ]
+      operationId: apiProductosInvInventoryIdPaginatedGet
+      summary: List products from inventory (Paginated)
+      parameters:
+        - $ref: '#/components/parameters/InventoryId'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPage'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /api/productos/inv/{inventory_id}/{product_id}:
     parameters:
       - $ref: '#/components/parameters/InventoryId'
       - $ref: '#/components/parameters/ProductId'
     put:
       tags: [ Products ]
-      operationId: updateInventoryProduct
-      summary: Update product of an inventory
+      operationId: apiProductosInvInventoryIdProductIdPut
+      summary: Update product in inventory
       requestBody:
         required: true
         content:
@@ -263,76 +358,11 @@ paths:
           $ref: '#/components/responses/NotFound'
     delete:
       tags: [ Products ]
-      operationId: deleteInventoryProduct
-      summary: Delete product of an inventory
+      operationId: apiProductosInvInventoryIdProductIdDelete
+      summary: Delete product from inventory
       responses:
         '204':
           description: Deleted
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '404':
-          $ref: '#/components/responses/NotFound'
-
-  /api/products:
-    get:
-      tags: [ Products ]
-      operationId: listProducts
-      summary: List all products (paginated)
-      parameters:
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/Size'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductPage'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-    post:
-      tags: [ Products ]
-      operationId: createProduct
-      summary: Create a product without inventory
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ProductDto'
-      responses:
-        '201':
-          description: Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-
-  /api/products/{id}:
-    get:
-      tags: [ Products ]
-      operationId: getProduct
-      summary: Get product by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema: { type: integer }
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ProductDto'
-        '400':
-          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '404':
@@ -357,12 +387,12 @@ components:
       description: Page size (max 100)
       schema: { type: integer, minimum: 1, maximum: 100, default: 10 }
     InventoryId:
-      name: inventoryId
+      name: inventory_id
       in: path
       required: true
       schema: { type: integer }
     ProductId:
-      name: productId
+      name: product_id
       in: path
       required: true
       schema: { type: integer }
@@ -417,7 +447,7 @@ components:
           example: El producto con ID 10 no existe
         instance:
           type: string
-          example: /api/products/10
+          example: /api/productos/10
         errors:
           type: array
           description: Field errors (only for validation errors)

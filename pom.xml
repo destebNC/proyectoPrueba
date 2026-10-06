@@ -10,10 +10,10 @@
 		<relativePath/>
 	</parent>
 
-	<groupId>com.example</groupId>
-	<artifactId>proyectoPrueba</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>proyectoPrueba</name>
+	<groupId>com.destebnc</groupId>
+	<artifactId>supermercado-api</artifactId>
+	<version>2.0.0</version>
+	<name>supermercado-api</name>
 	<description>API REST para gestionar inventarios y productos de un supermercado</description>
 
 	<properties>
@@ -118,7 +118,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.example.proyectoPrueba.ProyectoPruebaApplication</mainClass>
+					<mainClass>com.destebnc.supermercado.SupermercadoApplication</mainClass>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>
@@ -184,6 +184,11 @@
 									<addCompileSourceRoot>false</addCompileSourceRoot>
 									<configOptions>
 										<useJakartaEe>true</useJakartaEe>
+										<groupId>com.destebnc</groupId>
+										<artifactId>supermercado-sdk</artifactId>
+										<apiPackage>com.destebnc.supermercado.client.api</apiPackage>
+										<modelPackage>com.destebnc.supermercado.client.model</modelPackage>
+										<invokerPackage>com.destebnc.supermercado.client</invokerPackage>
 									</configOptions>
 								</configuration>
 							</execution>
