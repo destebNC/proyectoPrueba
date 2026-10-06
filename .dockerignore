@@ -1,0 +1,9 @@
+target/
+generated/
+release-artifacts/
+.git/
+.github/
+.idea/
+.vscode/
+*.iml
+.env

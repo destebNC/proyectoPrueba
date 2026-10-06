@@ -1,175 +1,187 @@
-# API de Gestion de Inventarios - SDK Multi-lenguaje
+# API REST Supermercado — Inventarios y Productos
 
-Este proyecto contiene una API REST para la gestion de inventarios y productos, junto con SDKs generados automaticamente para multiples lenguajes de programacion.
+[![CI](https://github.com/destebNC/proyectoPrueba/actions/workflows/ci.yml/badge.svg)](https://github.com/destebNC/proyectoPrueba/actions/workflows/ci.yml)
 
-## SDKs Disponibles
+API REST hecha con **Java 21 + Spring Boot 3** para gestionar los **inventarios** de un supermercado
+(por ejemplo "Almacén Madrid") y los **productos** que contienen. Está protegida con **JWT y roles**,
+documentada con **OpenAPI/Swagger** y, a partir del contrato OpenAPI, genera **SDKs en Java, TypeScript, C# y PHP**.
 
-### Lenguajes Soportados
-
-| Lenguaje | Ubicacion | Estado |
-|----------|-----------|--------|
-| Java | target/generated-sources/ | Generado automaticamente |
-| TypeScript | clients/typescript/ | Listo para generar |
-| C# | clients/csharp/ | Listo para generar |
-| PHP | clients/php/ | Listo para generar |
-
-### Postman Collection
-- Ubicacion: examples/postman/
-- Archivo: inventory-api.postman_collection.json
-- Auto-generacion: Scripts disponibles para Windows y Linux/Mac
+Proyecto de prácticas realizado en equipo.
 
 ---
 
-## Como generar el SDK en Java
+## Puesta en marcha rápida
 
-Para generar el SDK Java a partir del archivo OpenAPI:
+Elige **una** de estas opciones.
 
-1. Asegurarse de tener Maven instalado.
-2. Ejecutar el siguiente comando en la raiz del proyecto:
-```bash
-mvn clean compile
-```
+### Opción A — Solo Java (sin instalar base de datos)
 
-El SDK generado se encuentra en la carpeta: `target/generated-sources`
-o dentro de: `target/classes` (dependiendo de la configuracion del generador)
-
----
-
-## Como usar los SDKs en otros lenguajes
-
-### TypeScript
+Requisitos: **JDK 21 o superior**. Maven no hace falta (se usa el wrapper `mvnw`).
 
 ```bash
-cd clients/typescript
-npm install
-npm run generate
-npm run build
+git clone https://github.com/destebNC/proyectoPrueba.git
+cd proyectoPrueba
+./mvnw spring-boot:run          # en Windows (cmd/PowerShell): mvnw.cmd spring-boot:run
 ```
 
-### C#
+Usa una base de datos **H2 en memoria** que se rellena con datos de ejemplo en cada arranque
+(los cambios se pierden al parar la aplicación).
+
+### Opción B — Docker (API + MySQL)
+
+Requisitos: **Docker Desktop**.
 
 ```bash
-cd clients/csharp
-# Instalar OpenAPI Generator CLI
-openapi-generator-cli generate \
-  -i ../../../src/main/resources/openapi.yaml \
-  -g csharp-netcore \
-  -o . \
-  -c config.json
+git clone https://github.com/destebNC/proyectoPrueba.git
+cd proyectoPrueba
+docker compose up --build
 ```
 
-### PHP
+Levanta MySQL y la API. Los datos **se conservan** entre reinicios (volumen `db_data`).
+Para borrarlo todo: `docker compose down -v`.
+
+### Opción C — IntelliJ IDEA
+
+Abre la carpeta del proyecto y ejecuta la clase `ProyectoPruebaApplication`.
+
+---
+
+Con cualquiera de las tres, abre **http://localhost:8080/swagger-ui.html**.
+
+## Usuarios de prueba
+
+| Usuario | Contraseña | Rol   | Puede usar                                   |
+|---------|------------|-------|----------------------------------------------|
+| `admin` | `admin123` | ADMIN | Inventarios (`/api/inv`) y productos         |
+| `user`  | `user123`  | USER  | Productos (`/api/productos`)                 |
+
+Cualquiera puede registrarse con `POST /auth/register`; las cuentas nuevas siempre tienen el rol **USER**.
+
+**En Swagger UI:** ejecuta `POST /auth/login`, copia el `token` de la respuesta, pulsa **Authorize** y pégalo.
+
+## Cómo funciona
+
+```
+Cliente ──HTTP + JWT──▶ Controller ──▶ Service ──▶ Repository (JPA) ──▶ H2 / MySQL
+                            │              │
+                       DTO + @Valid     reglas de negocio,
+                                        errores 404/409...
+```
+
+| Paquete      | Qué contiene                                                                     |
+|--------------|----------------------------------------------------------------------------------|
+| `controller` | Endpoints REST. Reciben y devuelven DTOs, nunca entidades.                       |
+| `service`    | Lógica de negocio y conversión entidad ↔ DTO (`Mapper`).                         |
+| `repository` | Acceso a datos con Spring Data JPA.                                              |
+| `model`      | Entidades JPA: `Inventory` 1 ── N `Product`, y `User`.                           |
+| `security`   | Generación/validación de JWT, filtro de autenticación y reglas de acceso por rol. |
+| `exception`  | Errores en formato estándar RFC 7807 (`application/problem+json`).               |
+| `config`     | `DataInitializer`: crea los usuarios demo y datos de ejemplo al arrancar.        |
+
+### Endpoints
+
+| Método | Ruta                                             | Rol         | Descripción                              |
+|--------|--------------------------------------------------|-------------|------------------------------------------|
+| POST   | `/auth/register`                                 | público     | Crea un usuario USER y devuelve un token |
+| POST   | `/auth/login`                                    | público     | Devuelve un token JWT (1 hora)           |
+| GET    | `/api/inv`                                       | ADMIN       | Lista todos los inventarios              |
+| GET    | `/api/inv/paginated?page=0&size=10`              | ADMIN       | Lista inventarios paginados              |
+| GET    | `/api/inv/{id}`                                  | ADMIN       | Obtiene un inventario con sus productos  |
+| POST   | `/api/inv`                                       | ADMIN       | Crea un inventario (con o sin productos) |
+| PUT    | `/api/inv/{id}`                                  | ADMIN       | Renombra un inventario                   |
+| DELETE | `/api/inv/{id}`                                  | ADMIN       | Borra un inventario y sus productos      |
+| GET    | `/api/productos`                                 | ADMIN, USER | Lista todos los productos                |
+| GET    | `/api/productos/paginated`                       | ADMIN, USER | Lista productos paginados                |
+| GET    | `/api/productos/{id}`                            | ADMIN, USER | Obtiene un producto                      |
+| POST   | `/api/productos`                                 | ADMIN, USER | Crea un producto sin inventario          |
+| POST   | `/api/productos/inv/{inventoryId}`               | ADMIN, USER | Añade un producto a un inventario        |
+| GET    | `/api/productos/inv/{inventoryId}/paginated`     | ADMIN, USER | Productos de un inventario, paginados    |
+| PUT    | `/api/productos/inv/{inventoryId}/{productId}`   | ADMIN, USER | Actualiza un producto del inventario     |
+| DELETE | `/api/productos/inv/{inventoryId}/{productId}`   | ADMIN, USER | Borra un producto del inventario         |
+
+Códigos de respuesta: `200` OK · `201` creado · `204` borrado · `400` datos no válidos ·
+`401` sin token, token no válido o credenciales incorrectas · `403` rol insuficiente · `404` no existe · `409` usuario ya existe.
+
+### Ejemplo con curl
 
 ```bash
-cd clients/php
-composer install
-composer run generate
+# 1. Login
+TOKEN=$(curl -s -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"admin123"}' | sed 's/.*"token":"\([^"]*\)".*/\1/')
+
+# 2. Crear un inventario con un producto
+curl -X POST http://localhost:8080/api/inv \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"name":"Almacen Sevilla","products":[{"name":"Gazpacho 1L","price":2.5,"weight":1}]}'
+
+# 3. Ver sus productos paginados
+curl "http://localhost:8080/api/productos/inv/3/paginated?page=0&size=5" -H "Authorization: Bearer $TOKEN"
 ```
 
----
+## Configuración
 
-## Como usar el SDK Java
+Todo tiene valores por defecto pensados para desarrollo. En un entorno real cámbialos con variables de entorno
+(o con un fichero `.env` si usas Docker Compose):
 
-1. Importar las dependencias generadas en el proyecto.
-2. Crear una instancia del cliente API.
-3. Usar los metodos generados para consumir los endpoints.
+| Variable                 | Por defecto           | Uso                                         |
+|--------------------------|-----------------------|---------------------------------------------|
+| `SPRING_PROFILES_ACTIVE` | `dev`                 | `dev` = H2 en memoria, `mysql` = MySQL      |
+| `DB_URL`                 | `jdbc:mysql://localhost:3306/supermercado…` | Conexión MySQL (perfil `mysql`) |
+| `DB_USERNAME` / `DB_PASSWORD` | `supermercado` / `supermercado` | Credenciales MySQL               |
+| `JWT_SECRET`             | secreto de desarrollo | Clave para firmar los tokens (≥ 32 caracteres) |
+| `JWT_EXPIRATION_MINUTES` | `60`                  | Validez de los tokens                       |
+| `ADMIN_PASSWORD`         | `admin123`            | Contraseña del usuario `admin`              |
+| `DEMO_USER_PASSWORD`     | `user123`             | Contraseña del usuario `user`               |
+| `SEED_ENABLED`           | `true`                | Crear usuarios demo y datos de ejemplo      |
 
-Ejemplo:
+## Tests
 
-```java
-import com.example.generated.api.AuthApi;
-import com.example.generated.api.ProductsApi;
-import com.example.generated.model.LoginRequest;
-import com.example.generated.model.TokenResponse;
-
-public class TestClient {
-
-    public static void main(String[] args) {
-
-        // Crear cliente
-        ApiClient client = new ApiClient();
-        client.setBasePath("http://localhost:8080");
-
-        // Login
-        AuthApi authApi = new AuthApi(client);
-        LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUsername("admin");
-        loginRequest.setPassword("1234");
-
-        TokenResponse token = authApi.login(loginRequest);
-        System.out.println("Token: " + token.getJwt());
-
-        // Configurar token para futuras llamadas
-        client.setAccessToken(token.getJwt());
-
-        // Usar otras APIs
-        ProductsApi productsApi = new ProductsApi(client);
-        var products = productsApi.getAllProducts();
-        System.out.println(products);
-    }
-}
+```bash
+./mvnw verify
 ```
 
-### Ejemplo de ejecucion
+Ejecuta, sobre H2 y sin servicios externos:
 
-Para ejecutar el cliente:
+- **Tests de integración** (`ApiIntegrationTest`): login/registro, permisos por rol, CRUD de inventarios y productos,
+  paginación y códigos de error.
+- **Tests de contrato** (`ContractIntegrityTest`): comprueban que las peticiones y respuestas reales cumplen
+  `src/main/resources/static/openapi.yaml`.
+- Validación de la sintaxis del contrato OpenAPI.
 
-1. Iniciar la aplicacion Spring Boot.
-2. Ejecutar la clase TestClient desde IntelliJ o terminal.
-3. Ver la salida en consola.
+GitHub Actions ejecuta todo esto en cada push y pull request a `master`.
 
----
+## Contrato OpenAPI y SDKs
 
-## Importar coleccion Postman
+El contrato está escrito a mano (*contract-first*) en `src/main/resources/static/openapi.yaml`, y es lo que muestra Swagger UI.
+`openapi/releases/` guarda las versiones publicadas.
 
-1. Abrir Postman
-2. Click en "Import"
-3. Seleccionar examples/postman/inventory-api.postman_collection.json
-4. Configurar variable base_url como http://localhost:8080
+```bash
+# Genera en generated/ los SDKs (Java, TypeScript, C#, PHP) y la colección Postman
+./mvnw -Psdk generate-resources
 
----
-
-## Que se ha aprendido
-
-* Uso de OpenAPI para describir una API REST.
-* Generacion automatica de SDKs en multiples lenguajes.
-* Consumo de APIs mediante clientes tipados en diferentes tecnologias.
-* Diferencia entre DTOs y modelos de dominio.
-* Manejo de respuestas HTTP y errores en un cliente generado.
-* Importancia de documentar correctamente una API para automatizar su uso.
-* Seguridad basica en Spring con JWT.
-* Creacion de colecciones Postman para testing de APIs.
-
----
-
-## Estructura del proyecto
-
-```
-proyectoPrueba/
-├── src/main/
-│   ├── java/                    # Codigo fuente Java
-│   ├── resources/
-│   │   ├── application.properties
-│   │   └── openAPI.yaml         # Especificacion OpenAPI
-├── clients/                     # SDKs para otros lenguajes
-│   ├── typescript/
-│   ├── csharp/
-│   └── php/
-├── examples/
-│   └── postman/                 # Coleccion Postman
-├── target/
-│   └── generated-sources/       # SDK Java generado
-└── README.md
+# Arranca la app, exporta el OpenAPI generado por springdoc a target/openapi/ y pasa Spectral (requiere Node.js)
+./mvnw -Pcontract verify
 ```
 
----
+Para importar la colección en Postman: **Import** → `generated/postman/postman.json` y define la variable `baseUrl` como `http://localhost:8080`.
 
-## Tecnologias utilizadas
+## CI/CD
 
-- Spring Boot 3.3.5 - Framework principal
-- OpenAPI Generator - Generacion de SDKs
-- JWT - Autenticacion
-- MySQL - Base de datos
-- Maven - Gestion de dependencias
-- Postman - Testing de APIs
+- **GitHub Actions** (`.github/workflows/ci.yml`): build, tests y construcción de la imagen Docker.
+- **Jenkins** (`Jenkinsfile`, opcional): genera los SDKs, publica la imagen en Docker Hub con Jib, publica el SDK
+  TypeScript en npm y archiva los artefactos de la release. Necesita las credenciales `docker-hub-credentials` y `npm-token`.
 
+## Tecnologías
+
+Java 21 · Spring Boot 3.2 (Web, Data JPA, Security, Validation) · JWT (jjwt) · H2 / MySQL 8 ·
+springdoc-openapi · OpenAPI Generator · Atlassian swagger-request-validator · Docker · GitHub Actions · Jenkins
+
+## Qué hemos aprendido
+
+- Diseñar una API REST *contract-first* con OpenAPI y validar que la implementación lo cumple.
+- Generar SDKs para varios lenguajes a partir del contrato.
+- Separar DTOs y entidades de dominio, y validar la entrada con Bean Validation.
+- Seguridad sin estado con JWT y autorización por roles en Spring Security.
+- Manejo de errores homogéneo con Problem Details (RFC 7807).
+- Configuración por perfiles y variables de entorno, contenedores con Docker y pipelines de CI/CD.

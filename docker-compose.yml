@@ -1,18 +1,44 @@
-version: '3.8'
+# Levanta la API + MySQL con un solo comando:
+#   docker compose up --build
+# API: http://localhost:8080/swagger-ui.html
+#
+# Los valores por defecto sirven para probar en local. Para cambiarlos crea un fichero .env
+# junto a este (por ejemplo con JWT_SECRET=... y ADMIN_PASSWORD=...).
 services:
   db:
     image: mysql:8.0
-    container_name: mysql-container
-    restart: always
+    restart: unless-stopped
     environment:
-      MYSQL_DATABASE: proyecto_db
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: user_prueba
-      MYSQL_PASSWORD: password_prueba
+      MYSQL_DATABASE: supermercado
+      MYSQL_USER: ${DB_USERNAME:-supermercado}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-supermercado}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
     ports:
-      - "3307:3306"
+      - "3307:3306"   # 3307 en tu equipo para no chocar con un MySQL local
     volumes:
       - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: mysql
+      DB_URL: jdbc:mysql://db:3306/supermercado?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      DB_USERNAME: ${DB_USERNAME:-supermercado}
+      DB_PASSWORD: ${DB_PASSWORD:-supermercado}
+      JWT_SECRET: ${JWT_SECRET:-docker-local-secret-cambialo-en-produccion-123456}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      DEMO_USER_PASSWORD: ${DEMO_USER_PASSWORD:-user123}
+    ports:
+      - "8080:8080"
 
 volumes:
   db_data:

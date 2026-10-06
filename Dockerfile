@@ -1,20 +1,26 @@
-# 1. Usar una imagen oficial de Java 21 como base
-FROM eclipse-temurin:21-jdk-alpine
+# ---------- 1. Compilacion (no hace falta tener Java ni Maven en tu equipo) ----------
+FROM maven:3.9-eclipse-temurin-21 AS build
+WORKDIR /build
 
-# 2. Información sobre el creador de la imagen (opcional pero recomendado)
-LABEL maintainer="tu_correo@ejemplo.com"
-LABEL version="1.0"
-LABEL description="API de Proyecto Prueba"
+# Primero solo el pom para cachear las dependencias entre builds
+COPY pom.xml .
+RUN mvn -B -q dependency:go-offline
 
-# 3. Directorio de trabajo dentro del contenedor
+COPY src ./src
+RUN mvn -B -q package -DskipTests
+
+# ---------- 2. Imagen final, solo con el JRE ----------
+FROM eclipse-temurin:21-jre-alpine
+
+LABEL description="API REST de inventarios de supermercado (Spring Boot)"
+
+RUN addgroup -S app && adduser -S app -G app
+USER app
 WORKDIR /app
 
-# 4. Copiar el archivo .jar generado por Maven al contenedor
-# Maven deja el archivo en la carpeta target/
-COPY target/proyectoPrueba-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /build/target/proyectoPrueba-*.jar app.jar
 
-# 5. Exponer el puerto donde escucha la aplicación (asumo que es el 8081 por tus perfiles)
-EXPOSE 8081
+EXPOSE 8080
 
-# 6. Comando para arrancar la aplicación cuando se inicie el contenedor
-ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=ci"]
+# Perfil por defecto: dev (H2). docker-compose.yml lo cambia a mysql.
+ENTRYPOINT ["java", "-jar", "app.jar"]

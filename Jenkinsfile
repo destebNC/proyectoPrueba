@@ -22,7 +22,8 @@ pipeline {
                 sh 'chmod +x ./mvnw'
                 // Limpiamos también las nuevas carpetas de los SDKs para que se generen limpias
                 sh 'rm -rf generated/sdk-java generated/postman generated/sdk-typescript generated/sdk-csharp generated/sdk-php'
-                sh './mvnw clean generate-resources -Dspring.profiles.active=ci'
+                // El perfil Maven "sdk" activa la generacion de SDKs y de la coleccion Postman
+                sh './mvnw clean generate-resources -Psdk'
             }
         }
 
