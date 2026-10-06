@@ -1,0 +1,19 @@
+# Blueprint de Render para la demo online (plan gratuito).
+# En render.com: New > Blueprint > elige este repositorio.
+#
+# Usa el perfil dev (H2 en memoria): los datos de ejemplo se restauran cada vez que
+# el servicio se reinicia o se despierta, asi la demo siempre esta limpia.
+services:
+  - type: web
+    name: supermercado-api
+    runtime: docker
+    plan: free
+    healthCheckPath: /openapi.yaml
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: dev
+      - key: JWT_SECRET
+        generateValue: true
+      # El plan gratuito tiene 512 MB: deja que la JVM use la mayor parte
+      - key: JAVA_TOOL_OPTIONS
+        value: -XX:MaxRAMPercentage=75

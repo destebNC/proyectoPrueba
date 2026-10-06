@@ -1,0 +1,16 @@
+package com.destebnc.supermercado.controller;
+
+import io.swagger.v3.oas.annotations.Hidden;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+
+/** La raiz del servidor lleva a la documentacion interactiva (util en la demo online). */
+@Controller
+@Hidden
+public class HomeController {
+
+    @GetMapping("/")
+    public String home() {
+        return "redirect:/swagger-ui.html";
+    }
+}

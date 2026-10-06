@@ -35,7 +35,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // 1. Rutas publicas
-                        .requestMatchers("/auth/**", "/error").permitAll()
+                        .requestMatchers("/", "/auth/**", "/error").permitAll()
                         .requestMatchers(PUBLIC_DOCS).permitAll()
 
                         // 2. Rutas protegidas por roles (las mas especificas primero)

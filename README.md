@@ -10,6 +10,16 @@ Proyecto de prácticas realizado en equipo.
 
 ---
 
+## Demo online
+
+La API está desplegada en Render (plan gratuito) con datos de ejemplo: **_(enlace pendiente)_**
+
+> La primera visita puede tardar ~1 minuto: el servicio se duerme tras 15 minutos sin uso.
+> Los datos se restauran cada vez que se reinicia, así que puedes probar sin miedo.
+
+Para desplegar tu propia copia: en [render.com](https://render.com) → **New → Blueprint** → elige este repositorio
+(usa `render.yaml`).
+
 ## Puesta en marcha rápida
 
 Elige **una** de estas opciones.
