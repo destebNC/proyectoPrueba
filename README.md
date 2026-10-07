@@ -14,9 +14,9 @@ Proyecto de prácticas realizado en equipo.
 
 La API está desplegada en Render (plan gratuito) con datos de ejemplo:
 
+### 👉 [supermercado-api-glon.onrender.com](https://supermercado-api-glon.onrender.com)
 
-
-> La primera visita puede tardar ~1 minuto: el servicio se duerme tras 15 minutos sin uso.
+> La primera visita puede tardar 1-2 minutos: el servicio se duerme tras 15 minutos sin uso.
 > Los datos se restauran cada vez que se reinicia, así que puedes probar sin miedo.
 
 Para desplegar tu propia copia: en [render.com](https://render.com) → **New → Blueprint** → elige este repositorio
