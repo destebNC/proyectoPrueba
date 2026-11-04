@@ -7,6 +7,12 @@ import com.destebnc.supermercado.exception.InvalidCredentialsException;
 import com.destebnc.supermercado.model.User;
 import com.destebnc.supermercado.repository.UserRepository;
 import com.destebnc.supermercado.security.JwtUtil;
+import com.destebnc.supermercado.exception.TooManyAttemptsException;
+
+import java.util.Optional;
+
+import jakarta.validation.constraints.Size;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,15 +22,19 @@ public class AuthService {
 
     public static final String ROLE_USER = "USER";
     public static final String ROLE_ADMIN = "ADMIN";
+    // Hash de una contraseña cualquiera, para gastar el mismo tiempo cuando el usuario no existe
+    private static final String DUMMY_HASH = new BCryptPasswordEncoder().encode("contraseña-que-noexiste");
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final LoginAttemptService loginAttemptService;
 
-    public AuthService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public AuthService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, JwtUtil jwtUtil, LoginAttemptService loginAttemptService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.loginAttemptService = loginAttemptService;
     }
 
     /** Registra un usuario con rol USER y devuelve su token. Los ADMIN se crean al arrancar (DataInitializer). */
@@ -38,12 +48,22 @@ public class AuthService {
         return jwtUtil.generateToken(user.getUsername(), user.getRole());
     }
 
+
+
+
     @Transactional(readOnly = true)
     public String login(LoginRequestDto dto) {
-        // Mismo error si el usuario no existe o la contraseña falla: no revelamos que usuarios existen
-        User user = userRepository.findByUsername(dto.username())
-                .filter(u -> passwordEncoder.matches(dto.password(), u.getPassword()))
-                .orElseThrow(InvalidCredentialsException::new);
-        return jwtUtil.generateToken(user.getUsername(), user.getRole());
+        if (loginAttemptService.isBlocked(dto.username())){
+            throw new TooManyAttemptsException(); // nueva excepcion -> 429 too many requests
+        }
+        Optional<User> found = userRepository.findByUsername(dto.username());
+        String hash = found.map(User::getPassword).orElse(DUMMY_HASH);
+        boolean ok = passwordEncoder.matches(dto.password(), hash) && found.isPresent();
+        if (!ok){
+            loginAttemptService.loginFailed(dto.username());
+            throw new InvalidCredentialsException();
+        }
+        loginAttemptService.loginSucceeded(dto.username());
+        return jwtUtil.generateToken(found.get().getUsername(), found.get().getRole());
     }
 }

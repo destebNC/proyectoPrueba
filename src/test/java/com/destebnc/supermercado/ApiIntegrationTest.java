@@ -207,4 +207,15 @@ class ApiIntegrationTest {
                 .andReturn().getResponse().getContentAsString();
         return objectMapper.readTree(body).get("id").asInt();
     }
+
+    @Test
+        void login_blockedAfterFiveFailures_returns429() throws Exception {
+        String body = "{\"username\":\"bloqueo-test\",\"password\":\"mala\"}";
+        for (int i = 0; i < 5; i++) {
+                mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(body))
+                        .andExpect(status().isUnauthorized());
+        }
+        mockMvc.perform(post("/auth/login").contentType(MediaType.APPLICATION_JSON).content(body))
+                .andExpect(status().isTooManyRequests());
+}
 }
