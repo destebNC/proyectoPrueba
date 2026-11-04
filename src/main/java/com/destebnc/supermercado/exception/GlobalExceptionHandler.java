@@ -48,6 +48,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problem(HttpStatus.BAD_REQUEST, "Peticion incorrecta", ex.getMessage());
     }
 
+    @ExceptionHandler(TooManyAttemptsException.class)
+    public ProblemDetail handleTooManyAttempts(TooManyAttemptsException ex) {
+        return problem(HttpStatus.TOO_MANY_REQUESTS, "Demasiados intentos", ex.getMessage());
+    }
+
     // Errores de @Valid en el cuerpo de la peticion
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(@NonNull MethodArgumentNotValidException ex,

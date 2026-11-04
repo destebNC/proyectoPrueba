@@ -77,6 +77,8 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyAttempts'
 
   /api/inventories:
     get:
@@ -398,6 +400,12 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/ProblemDetail'
+    TooManyAttempts:
+      description: Too many failed login attempts, the user is blocked for 15 minutes
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
 
   schemas:
     ProblemDetail:
@@ -448,7 +456,7 @@ components:
       required: [ name, price ]
       properties:
         id: { type: integer, readOnly: true, nullable: true }
-        name: { type: string, example: Leche entera 1L }
+        name: { type: string, maxLength: 100, example: Leche entera 1L }
         price: { type: number, format: double, exclusiveMinimum: true, minimum: 0, example: 0.95 }
         weight: { type: number, format: double, minimum: 0, nullable: true, example: 1.03 }
         inventoryId:
@@ -462,9 +470,10 @@ components:
       required: [ name ]
       properties:
         id: { type: integer, readOnly: true, nullable: true }
-        name: { type: string, example: Almacen Madrid }
+        name: { type: string, maxLength: 100, example: Almacen Madrid }
         products:
           type: array
+          maxItems: 100
           nullable: true
           items:
             $ref: '#/components/schemas/ProductDto'
